@@ -12,7 +12,7 @@ ASevens::ASevens()
 void ASevens::BeginPlay()
 {
 	Super::BeginPlay();
-
+	SetGame();
 }
 
 void ASevens::Tick(float DeltaTime)
@@ -25,7 +25,7 @@ void ASevens::SetGame()
 {
 	for (int i = 0; i < 4; i++)
 	{
-		for (int j = 0; j < 13; j++)
+		for (int j = 1; j <= 13; j++)
 		{	
 			Deck.Push(Card(i, j));
 		}
@@ -38,13 +38,15 @@ void ASevens::SetGame()
 	{
 		Deck[i].PrintSuit();
 	}
+
+
 }
 
 void ASevens::SetPlayers()
 {
 	for (int i = 0; i < PlayerNum; i++)
 	{
-		 
+		Players.Push(GamePlayer(false));
 	}
 }
 

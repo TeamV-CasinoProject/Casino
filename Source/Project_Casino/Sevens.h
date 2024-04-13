@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "Math/UnrealMathUtility.h"
 #include "Card.h"
+#include "GamePlayer.h"
 #include "Sevens.generated.h"
 
 static const int PlayerNum = 4;
@@ -29,5 +30,5 @@ public:
 
 private:
 	TArray<Card> Deck;
-	TArray<Card> Players;
+	TArray<GamePlayer> Players;
 };

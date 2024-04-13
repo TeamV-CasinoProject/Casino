@@ -8,7 +8,7 @@ class PROJECT_CASINO_API GamePlayer
 {
 public:
 	GamePlayer();
-
+	GamePlayer(bool);
 	~GamePlayer();
 
 public:
