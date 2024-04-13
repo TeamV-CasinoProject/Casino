@@ -7,6 +7,17 @@ Card::Card()
 {
 }
 
+Card::Card(int _Suit, int _Num)
+{
+	Suit = _Suit;
+	Num = _Num;
+}
+
 Card::~Card()
 {
+}
+
+void Card::PrintSuit()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Suit is %d%d"), Suit, Num);
 }

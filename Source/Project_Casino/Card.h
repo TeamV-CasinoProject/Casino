@@ -11,5 +11,13 @@ class PROJECT_CASINO_API Card
 {
 public:
 	Card();
+	Card(int, int);
 	~Card();
+
+public:
+	void PrintSuit();
+
+private:
+	int Suit;
+	int Num;
 };

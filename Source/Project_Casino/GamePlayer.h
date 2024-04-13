@@ -4,12 +4,18 @@
 
 #include "CoreMinimal.h"
 
-/**
- * 
- */
 class PROJECT_CASINO_API GamePlayer
 {
 public:
 	GamePlayer();
+
 	~GamePlayer();
+
+public:
+	void TakeATurn();
+	bool IsActive();
+	void Activate();
+
+private:
+	bool IsActivated;
 };
