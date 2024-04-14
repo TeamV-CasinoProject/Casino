@@ -6,19 +6,36 @@
 ASevens::ASevens()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
 void ASevens::BeginPlay()
 {
 	Super::BeginPlay();
+	SetPlayers();
 	SetGame();
+
+	CurrentPlayerNum = 0;
 }
 
 void ASevens::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if(!Players[CurrentPlayerNum].IsActive())
+		Players[CurrentPlayerNum].Activate();
+
+	
+	UE_LOG(LogTemp, Warning, TEXT("%d has "), CurrentPlayerNum);
+	Players[CurrentPlayerNum].TakeATurn();
+	FPlatformProcess::Sleep(2.0f);
+
+
+
+
+	Players[CurrentPlayerNum].Deactivate();
+	CurrentPlayerNum++;
+	if (CurrentPlayerNum == 4) CurrentPlayerNum = 0;
+	Players[CurrentPlayerNum].Activate();
 }
 
 void ASevens::SetGame()
@@ -62,8 +79,14 @@ void ASevens::ShuffleDeck(TArray<Card>& _Deck)
 	for (int i = 0; i < DeckSize; i++)
 	{
 		int RandomIdx = FMath::RandRange(0, DeckSize - 1);
+
 		Card Tmp = _Deck[i];
 		_Deck[i] = _Deck[RandomIdx];
 		_Deck[RandomIdx] = Tmp;
 	}
+}
+
+void ASevens::PlayCard()
+{
+	//카드를 내는 작업 - 실제 카드 인스턴스를 생성하고 화면의 적절한 위치로 이동
 }

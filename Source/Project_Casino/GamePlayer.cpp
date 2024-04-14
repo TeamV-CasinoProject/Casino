@@ -5,10 +5,12 @@
 
 GamePlayer::GamePlayer()
 {
+	Pass = 5;
 }
 
 GamePlayer::GamePlayer(bool _IsActivated)
 {
+	Pass = 5;
 	IsActivated = _IsActivated;
 }
 
@@ -36,5 +38,15 @@ bool GamePlayer::IsActive()
 
 void GamePlayer::Activate()
 {
-	IsActivated = IsActivated ? false : true;
+	IsActivated = true;
+}
+
+void GamePlayer::Deactivate()
+{
+	IsActivated = false;
+}
+
+void GamePlayer::RemoveCard()
+{
+	//»Ï
 }

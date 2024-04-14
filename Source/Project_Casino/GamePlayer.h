@@ -17,9 +17,11 @@ public:
 	void SetHands(TArray<Card>, int , int);
 	bool IsActive();
 	void Activate();
+	void Deactivate();
+	void RemoveCard();
 
 private:
 	TArray<Card> Hands;	
 	bool IsActivated;
-
+	int Pass;
 };

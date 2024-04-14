@@ -28,7 +28,11 @@ public:
 	void SetPlayers();
 	void ShuffleDeck(TArray<Card>&);
 
+	void PlayCard();
+
 private:
 	TArray<Card> Deck;
 	TArray<GamePlayer> Players;
+
+	int CurrentPlayerNum;
 };

@@ -4,9 +4,6 @@
 
 #include "CoreMinimal.h"
 
-/**
- * 
- */
 class PROJECT_CASINO_API Card
 {
 public:
