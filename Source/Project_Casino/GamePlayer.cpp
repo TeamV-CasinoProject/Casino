@@ -42,6 +42,11 @@ void GamePlayer::SetHands(TArray<Card> Deck, int Begin, int End)
 	}
 }
 
+TArray<Card>* GamePlayer::GetHands()
+{
+	return &Hands;
+}
+
 bool GamePlayer::IsActive()
 {
 	return IsActivated;

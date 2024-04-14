@@ -96,6 +96,15 @@ void ASevens::SetGame()
 	}
 
 	//패에 있는 카드를 화면에 나열하는 코드
+	for (int i = 0; i < PlayerNum; i++)
+	{
+		TArray<Card> Hands = *(Players[i].GetHands());
+		for (int j = 0; j < Hands.Num(); j++)
+		{
+			FVector SpawnLocation = FVector(i * 70, j * 50, 400);
+			SpawnCard(SpawnLocation, FRotator(), FActorSpawnParameters(), Hands[i]);
+		}
+	}
 }
 
 void ASevens::SetPlayers()
@@ -125,6 +134,35 @@ void ASevens::TakeATurn(Card Selected)
 
 	//PlayCard();
 	MoveToNextTurn();
+}
+
+void ASevens::SpawnCard(FVector SpawnLocation, FRotator Rotator, FActorSpawnParameters SpawnParams, Card _Card)
+{
+	ACardInHands* NewCard = GetWorld()->SpawnActor<ACardInHands>(
+		ACardInHands::StaticClass(), SpawnLocation, Rotator, SpawnParams);
+
+	NewCard->SetMyself(_Card.GetSuit(), _Card.GetNum());
+
+	UStaticMeshComponent* MeshComponent = NewObject<UStaticMeshComponent>(NewCard);
+	UE_LOG(LogTemp, Warning, TEXT("Card Spawned"));
+	UStaticMesh* CubeMesh = LoadObject<UStaticMesh>(nullptr, TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'"));
+	if (CubeMesh)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Mesh Spawned"));
+		MeshComponent->SetStaticMesh(CubeMesh);
+
+		UMaterial* BasicShapeMaterial = LoadObject<UMaterial>(nullptr, TEXT("Material'/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial'"));
+		if (BasicShapeMaterial)
+		{
+			MeshComponent->SetMaterial(0, BasicShapeMaterial);
+		}
+
+		MeshComponent->SetWorldScale3D(FVector(0.9f, 0.65f, 0.01f));
+
+		MeshComponent->AttachToComponent(NewCard->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+
+		MeshComponent->SetWorldLocationAndRotation(SpawnLocation, Rotator);
+	}
 }
 
 void ASevens::MoveToNextTurn()

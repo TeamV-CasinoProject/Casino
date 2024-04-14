@@ -15,6 +15,7 @@ public:
 public:
 	void RemoveCardToHands(Card);
 	void SetHands(TArray<Card>, int , int);
+	TArray<Card>* GetHands();
 	bool IsActive();
 	void Activate();
 	void Deactivate();

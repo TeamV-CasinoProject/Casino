@@ -13,7 +13,10 @@ public:
 
 public:
 	void PrintSuit();
+	void SetCard(int , int);
 	bool CheckEquality(Card);
+	int GetSuit();
+	int GetNum();
 
 private:
 	int Suit;

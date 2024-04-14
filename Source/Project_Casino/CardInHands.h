@@ -8,7 +8,6 @@
 #include "CardInHands.generated.h"
 
 class ASevens;
-//class PROJECT_CASINO_API Card;
 
 UCLASS()
 class PROJECT_CASINO_API ACardInHands : public AActor
@@ -17,15 +16,17 @@ class PROJECT_CASINO_API ACardInHands : public AActor
 	
 public:	
 	ACardInHands();
-	virtual void Tick(float DeltaTime) override;
+	ACardInHands(Card);
+	//virtual void Tick(float DeltaTime) override;
 
 protected:
-	virtual void BeginPlay() override;
+	//virtual void BeginPlay() override;
 
 public:		
 	UFUNCTION()
 	void OnCardClicked(UPrimitiveComponent* ClickedComp, FKey ButtonClicked);
 	void SetSevensInstance(ASevens* PokerInstance);
+	void SetMyself(int, int);
 
 private:
 	ASevens* Sevens;
