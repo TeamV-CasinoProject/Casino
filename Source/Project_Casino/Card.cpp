@@ -19,5 +19,5 @@ Card::~Card()
 
 void Card::PrintSuit()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Suit is %d%d"), Suit, Num);
+	UE_LOG(LogTemp, Warning, TEXT("Suit is %d %d"), Suit, Num);
 }

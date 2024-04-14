@@ -23,6 +23,7 @@ void ASevens::Tick(float DeltaTime)
 
 void ASevens::SetGame()
 {
+	//Reset Card
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 1; j <= 13; j++)
@@ -31,15 +32,20 @@ void ASevens::SetGame()
 		}
 	}
 
+	//Shuffle Card
 	ShuffleDeck(Deck);
 
-	//print test
+	//Print Test
 	for (int i = 0; i < Deck.Num(); i++)
 	{
 		Deck[i].PrintSuit();
 	}
 
-
+	//Hand Out Cards to Players
+	for (int i = 0; i < PlayerNum; i++)
+	{
+		Players[i].SetHands(Deck, i * 13, (i + 1) * 13);
+	}
 }
 
 void ASevens::SetPlayers()

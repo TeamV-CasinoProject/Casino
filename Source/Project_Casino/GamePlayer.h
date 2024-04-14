@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Card.h"
 #include "CoreMinimal.h"
 
 class PROJECT_CASINO_API GamePlayer
@@ -13,9 +14,12 @@ public:
 
 public:
 	void TakeATurn();
+	void SetHands(TArray<Card>, int , int);
 	bool IsActive();
 	void Activate();
 
 private:
+	TArray<Card> Hands;	
 	bool IsActivated;
+
 };
