@@ -21,6 +21,9 @@ GamePlayer::~GamePlayer()
 void GamePlayer::TakeATurn()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Proceed Turn..."));
+
+
+	
 }
 
 void GamePlayer::SetHands(TArray<Card> Deck, int Begin, int End)
@@ -46,7 +49,7 @@ void GamePlayer::Deactivate()
 	IsActivated = false;
 }
 
-void GamePlayer::RemoveCard()
+void GamePlayer::RemoveCardToHands()
 {
 	//»Ï
 }

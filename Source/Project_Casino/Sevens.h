@@ -35,4 +35,6 @@ private:
 	TArray<GamePlayer> Players;
 
 	int CurrentPlayerNum;
+
+	float TmpTime;
 };

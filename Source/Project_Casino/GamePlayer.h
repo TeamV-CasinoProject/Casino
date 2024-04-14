@@ -18,7 +18,7 @@ public:
 	bool IsActive();
 	void Activate();
 	void Deactivate();
-	void RemoveCard();
+	void RemoveCardToHands();
 
 private:
 	TArray<Card> Hands;	

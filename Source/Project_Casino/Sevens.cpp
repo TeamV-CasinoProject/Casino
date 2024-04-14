@@ -15,6 +15,8 @@ void ASevens::BeginPlay()
 	SetGame();
 
 	CurrentPlayerNum = 0;
+
+	TmpTime = 0;
 }
 
 void ASevens::Tick(float DeltaTime)
@@ -24,18 +26,21 @@ void ASevens::Tick(float DeltaTime)
 	if(!Players[CurrentPlayerNum].IsActive())
 		Players[CurrentPlayerNum].Activate();
 
-	
-	UE_LOG(LogTemp, Warning, TEXT("%d has "), CurrentPlayerNum);
-	Players[CurrentPlayerNum].TakeATurn();
-	FPlatformProcess::Sleep(2.0f);
 
+	if(TmpTime > 2.0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%d has "), CurrentPlayerNum);
+		Players[CurrentPlayerNum].TakeATurn();
 
+		Players[CurrentPlayerNum].Deactivate();
+		CurrentPlayerNum++;
+		if (CurrentPlayerNum == 4) CurrentPlayerNum = 0;
+		Players[CurrentPlayerNum].Activate();
 
+		TmpTime = 0;
+	}
 
-	Players[CurrentPlayerNum].Deactivate();
-	CurrentPlayerNum++;
-	if (CurrentPlayerNum == 4) CurrentPlayerNum = 0;
-	Players[CurrentPlayerNum].Activate();
+	TmpTime += DeltaTime;
 }
 
 void ASevens::SetGame()
