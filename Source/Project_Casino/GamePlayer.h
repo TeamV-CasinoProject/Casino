@@ -13,12 +13,12 @@ public:
 	~GamePlayer();
 
 public:
-	void TakeATurn();
+	void RemoveCardToHands(Card);
 	void SetHands(TArray<Card>, int , int);
 	bool IsActive();
 	void Activate();
 	void Deactivate();
-	void RemoveCardToHands();
+	void UpdateHands();
 
 private:
 	TArray<Card> Hands;	

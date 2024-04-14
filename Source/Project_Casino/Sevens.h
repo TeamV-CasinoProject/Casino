@@ -5,9 +5,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "Math/UnrealMathUtility.h"
-#include "Card.h"
 #include "GamePlayer.h"
 #include "Sevens.generated.h"
+
+class Card;
 
 static const int PlayerNum = 4;
 
@@ -27,7 +28,8 @@ public:
 	void SetGame();
 	void SetPlayers();
 	void ShuffleDeck(TArray<Card>&);
-
+	void TakeATurn(Card);
+	void MoveToNextTurn();
 	void PlayCard();
 
 private:
@@ -37,4 +39,5 @@ private:
 	int CurrentPlayerNum;
 
 	float TmpTime;
+	int TurnProcess;
 };

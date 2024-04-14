@@ -13,6 +13,7 @@ public:
 
 public:
 	void PrintSuit();
+	bool CheckEquality(Card);
 
 private:
 	int Suit;

@@ -21,3 +21,11 @@ void Card::PrintSuit()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Suit is %d %d"), Suit, Num);
 }
+
+bool Card::CheckEquality(Card Another)
+{
+	if(Suit == Another.Suit && Num == Another.Num)
+		return true;
+
+	return false;
+}

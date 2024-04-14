@@ -2,6 +2,7 @@
 
 
 #include "Sevens.h"
+#include "Card.h"
 
 ASevens::ASevens()
 {
@@ -15,22 +16,47 @@ void ASevens::BeginPlay()
 	SetGame();
 
 	CurrentPlayerNum = 0;
+	TurnProcess = 0;
 
 	TmpTime = 0;
 }
-
+/*
 void ASevens::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if(!Players[CurrentPlayerNum].IsActive())
+	switch (TurnProcess)
+	{
+	case 0:
+		if (!Players[CurrentPlayerNum].IsActive())
+			Players[CurrentPlayerNum].Activate();
+		TurnProcess = 1;
+		break;
+
+	case 1:
+		TurnProcess = 2;
+		TurnProcess = Players[CurrentPlayerNum].TakeATurn();		
+		break;
+
+	case 3:
+		Players[CurrentPlayerNum].Deactivate();
+		CurrentPlayerNum++;
+		if (CurrentPlayerNum == 4) CurrentPlayerNum = 0;
 		Players[CurrentPlayerNum].Activate();
+		break;
+	}
+	
+}
+*/
 
+/*
+if (!Players[CurrentPlayerNum].IsActive())
+			Players[CurrentPlayerNum].Activate();
 
-	if(TmpTime > 2.0)
+if(TmpTime > 2.0)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%d has "), CurrentPlayerNum);
-		Players[CurrentPlayerNum].TakeATurn();
+		//Players[CurrentPlayerNum].TakeATurn();
 
 		Players[CurrentPlayerNum].Deactivate();
 		CurrentPlayerNum++;
@@ -41,7 +67,7 @@ void ASevens::Tick(float DeltaTime)
 	}
 
 	TmpTime += DeltaTime;
-}
+*/
 
 void ASevens::SetGame()
 {
@@ -68,13 +94,15 @@ void ASevens::SetGame()
 	{
 		Players[i].SetHands(Deck, i * 13, (i + 1) * 13);
 	}
+
+	//패에 있는 카드를 화면에 나열하는 코드
 }
 
 void ASevens::SetPlayers()
 {
 	for (int i = 0; i < PlayerNum; i++)
 	{
-		Players.Push(GamePlayer(false));
+		Players.Push(GamePlayer());
 	}
 }
 
@@ -89,6 +117,20 @@ void ASevens::ShuffleDeck(TArray<Card>& _Deck)
 		_Deck[i] = _Deck[RandomIdx];
 		_Deck[RandomIdx] = Tmp;
 	}
+}
+
+void ASevens::TakeATurn(Card Selected)
+{
+	Players[CurrentPlayerNum].RemoveCardToHands(Selected);
+
+	//PlayCard();
+	MoveToNextTurn();
+}
+
+void ASevens::MoveToNextTurn()
+{
+	CurrentPlayerNum++;
+	if (CurrentPlayerNum == 4) CurrentPlayerNum = 0;
 }
 
 void ASevens::PlayCard()
