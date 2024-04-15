@@ -11,6 +11,9 @@
  * 
  */
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDrawDeligate);
+
+
 class PlayerInfo
 {
 public:
@@ -19,10 +22,11 @@ public:
 	int Sum;
 	int First;
 	int Second;
-	void InitHand();
+	int Coin = 0;// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ý¾ï¿½
+	int InsuranceCoin = 0; //ï¿½ï¿½ï¿½ï¿½ï¿½
+
+	void Init();
 	int CalcSum();
-	int Coin = 0;// ¹èÆÃÇÑ ±Ý¾×
-	int InsuranceCoin = 0; //º¸Çè±Ý
 private:
 };
 
@@ -32,34 +36,39 @@ class PROJECT_CASINO_API ABlackJack : public AGameModeBase
 	GENERATED_BODY()
 public:
 	UFUNCTION(BlueprintCallable, Category = "BlackJack")
-	void InitGame(); // °ÔÀÓ ½ÃÀÛ
-	void SetDeck(); // °ÔÀÓ ½ÃÀÛÇÏ°í ÃÊ±â µ¦ ÁØºñ
+	void InitGame(); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	void SetDeck(); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ê±ï¿½ ï¿½ï¿½ ï¿½Øºï¿½
 	UFUNCTION(BlueprintCallable, Category = "BlackJack")
-	void Bet(); // ÃÊ±â ¹èÆÃ±Ý¾× ¼³Á¤
+	void Bet(); // ï¿½Ê±ï¿½ ï¿½ï¿½ï¿½Ã±Ý¾ï¿½ ï¿½ï¿½ï¿½ï¿½
 	UFUNCTION(BlueprintCallable, Category = "BlackJack")
 	void Double();
 	UFUNCTION(BlueprintCallable, Category = "BlackJack")
-	void InitRound(); // µô·¯¿Í ÇÃ·¹ÀÌ¾îÀÇ ÃÊ±â Ä«µå ÁØºñ
+	void InitRound(); // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½ Ä«ï¿½ï¿½ ï¿½Øºï¿½
 	UFUNCTION(BlueprintCallable, Category = "BlackJack")
-	void Hit();// Ä«µå ÇÑÀå ´õ
+	void Hit();// Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 	UFUNCTION(BlueprintCallable, Category = "BlackJack")
-	void Stay();// ÅÏÁ¾·á
+	void Stay();// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	UFUNCTION(BlueprintCallable, Category = "BlackJack")
 	void Insurance(); 
-	//µô·¯°¡ ºí·¢ÀèÀÏ°Å¶ó »ý°¢µÉ¶§ ¹èÆÃ±Ý¾×ÀÇ Àý¹Ý±îÁö º¸ÇèÀ¸·Î Ãß°¡ÁöºÒ ºí·¢ÀèÀÌ¸é º¸Çè±ÝÀÇ µÎ¹è ¾Æ´Ï¸é Áõ¹ß Ã¹Ä«µå°¡ A¾Æ´Ï¿©µµ °¡´ÉÇÏ°Ô ·ê ¼öÁ¤
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï°Å¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½É¶ï¿½ ï¿½ï¿½ï¿½Ã±Ý¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ý±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î¹ï¿½ ï¿½Æ´Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¹Ä«ï¿½å°¡ Aï¿½Æ´Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	UFUNCTION(BlueprintCallable, Category = "BlackJack")
-	void DoubleDown();// ´ÙÀ½ Ä«µå¸¦ ¹Þ°í ÅÏ Á¾·á ÀÌ±â¸é 2.5¹è
+	void DoubleDown();// ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½å¸¦ ï¿½Þ°ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì±ï¿½ï¿½ 2.5ï¿½ï¿½
 	UFUNCTION(BlueprintCallable, Category = "BlackJack")
-	void Calc();//¹ö½ºÆ®ÀÎÁö, µô·¯ÀÇ ÅÏÀÌ ³¡³µ´ÂÁö È®ÀÎ
+	void Calc();//ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
+	UFUNCTION(BlueprintCallable, Category = "BlackJack")
+	int GetPlayerPoint();
 
-	void Dealer();//µô·¯ÀÇ ÅÏ
-	void RoundEnd();//µô·¯ÀÇ ÅÏÀÌ³¡³ª°í ¹èÆÃ±Ý¾× Á¤»ê
+	void Dealer();//ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+	void RoundEnd();//ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì³ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã±Ý¾ï¿½ ï¿½ï¿½ï¿½ï¿½
 public:
-	TArray<Card> Deck; //µ¦
-	TArray<PlayerInfo> PlayerList; // 0~2 : ÇÃ·¹ÀÌ¾î ¸¶Áö¸· : µô·¯
+	UPROPERTY(BlueprintReadWrite,EditAnywhere)
+	FDrawDeligate Draw;
 
-	int PlayerCount;//ÇÃ·¹ÀÌ¾îÀÇ ¼ö
-	int DeckPoint; //Ä«µå¸¦ ¾ó¸¶³ª ›§³ª?
-	int PlayerPoint; //´©±¸ÅÏÀÎÁö È®ÀÎ
+	TArray<Card> Deck; //ï¿½ï¿½
+	TArray<PlayerInfo> PlayerList; // 0~2 : ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ : ï¿½ï¿½ï¿½
+
+	int PlayerCount;//ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ ï¿½ï¿½
+	int DeckPoint; //Ä«ï¿½å¸¦ ï¿½ó¸¶³ï¿½ ï¿½ï¿½ï¿½ï¿½?
+	int PlayerPoint; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
 	bool IsDealerTurn = false;
 };

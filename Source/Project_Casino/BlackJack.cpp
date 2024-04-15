@@ -7,12 +7,12 @@
 
 void ABlackJack::InitGame()
 {
-	//¼³¸í ¶ç¿ì±â
-	//ÇÃ·¹ÀÌ¾î ¼ö ¼³Á¤ (È¥ÀÚ ¿©·¯ µ¦À» »ç¿ëÇÏ°Ô °³¹ßÇÒ °æ¿ì Ãß°¡)
-	//test¿ë
-	PlayerCount = 3;//¼³Á¤ÇÏ´ÂºÎºÐ ui·Î ¸¸µé±â
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	//ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (È¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ß°ï¿½)
+	//testï¿½ï¿½
+	PlayerCount = 3;//ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ÂºÎºï¿½ uiï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
 
-	//ÇÃ·¹ÀÌ¾î ¼ö + 1 ¸¸Å­ »ý¼º
+	//ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ + 1 ï¿½ï¿½Å­ ï¿½ï¿½ï¿½ï¿½
 	for (int i = 0; i < PlayerCount + 1; i++)
 	{
 		PlayerList.Push(PlayerInfo());
@@ -20,7 +20,7 @@ void ABlackJack::InitGame()
 	SetDeck();
 }
 
-// °ÔÀÓ ½ÃÀÛ
+// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 void ABlackJack::SetDeck()
 {
 	for (int i = 0; i < 4; i++)
@@ -40,24 +40,25 @@ void ABlackJack::SetDeck()
 
 void ABlackJack::Bet()
 {
-	//¹èÆÃ ±Ý¾× Á¤ÇÏ±â ÀÚ¸® º°·Î
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½Ý¾ï¿½ ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½
+	InitRound();
 }
 
 void ABlackJack::Double()
 {
-	//³»°¡ ¹ÞÀ» µÎÀåÀÇ Ä«µå°¡ ´õºíÀÌ¶ó°í ¿¹»óµÇ¸é ¹èÆÃ
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½å°¡ ï¿½ï¿½ï¿½ï¿½ï¿½Ì¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¸ï¿½ ï¿½ï¿½ï¿½ï¿½
 }
 
-//¶ó¿îµå ÃÊ±âÈ­
+//ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
 void ABlackJack::InitRound()
 {
 	for (PlayerPoint = 0; PlayerPoint < PlayerCount; PlayerPoint++)
 		Hit();
-	Hit();//Ä«µå º¸¿©ÁÙ¶§ µÞ¸éÀ¸·Î
+	Hit();//Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½ ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ï¿½
 
 	for (PlayerPoint = 0; PlayerPoint < PlayerCount; PlayerPoint++)
 		Hit();
-	Hit();//¾ê´Â ¾Õ¸éÀ¸·Î
+	Hit();//ï¿½ï¿½ï¿½ ï¿½Õ¸ï¿½ï¿½ï¿½ï¿½ï¿½
 
 	for (PlayerPoint = 0; PlayerPoint < PlayerCount; PlayerPoint++)
 	{
@@ -65,12 +66,11 @@ void ABlackJack::InitRound()
 			UE_LOG(LogTemp, Warning, TEXT("%d Player  Double"), PlayerPoint);
 	}
 	PlayerPoint = 0;
-
 }
 
 void ABlackJack::DoubleDown()
 {
-	//¹èÆÃ±Ý¾× µÎ¹è
+	//ï¿½ï¿½ï¿½Ã±Ý¾ï¿½ ï¿½Î¹ï¿½
 	Hit();
 	Stay();
 }
@@ -91,6 +91,11 @@ void ABlackJack::Calc()
 			Hit();
 		else
 			RoundEnd();
+}
+
+int ABlackJack::GetPlayerPoint()
+{
+	return PlayerPoint;
 }
 
 
@@ -114,13 +119,19 @@ void ABlackJack::RoundEnd()
 		}
 		else if (PlayerList[i].Sum == Dealer)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%d Player Draw"), i);//°Ç¸¸Å­
+			UE_LOG(LogTemp, Warning, TEXT("%d Player Draw"), i);//ï¿½Ç¸ï¿½Å­
 		}
 		else
-			UE_LOG(LogTemp, Warning, TEXT("%d Player Loser"), i);//°Ç¸¸Å­
+			UE_LOG(LogTemp, Warning, TEXT("%d Player Loser"), i);//ï¿½Ç¸ï¿½Å­
 		if (Dealer == 21)
-			return;//ÀÎ½´¾î * 2¹è
+			return;//ï¿½Î½ï¿½ï¿½ï¿½ * 2ï¿½ï¿½
 	}
+	for (PlayerPoint = 0; PlayerPoint < PlayerCount+1; PlayerPoint++)
+		PlayerList[PlayerPoint].Init();
+	PlayerPoint = 0;
+	IsDealerTurn = false;
+	Bet();
+
 }
 
 void ABlackJack::Stay()
@@ -140,16 +151,25 @@ void ABlackJack::Stay()
 
 void ABlackJack::Insurance()
 {
+
 }
 
 void ABlackJack::Hit()
 {
+	Draw.Broadcast();
 	UE_LOG(LogTemp, Warning, TEXT("%d Player  %d"), PlayerPoint, Deck[DeckPoint].Num);
 	PlayerList[PlayerPoint].Hand.Push(Deck[DeckPoint++]);
 	Calc();
 }
 
- int PlayerInfo::CalcSum() {
+void PlayerInfo::Init()
+{
+	Hand.Empty();
+	Coin = 0;
+	InsuranceCoin = 0;
+}
+
+int PlayerInfo::CalcSum() {
 	 int AceCount = 0;
 	 Sum = 0;
 	for (auto It = Hand.begin(); It != Hand.end(); ++It)
@@ -170,6 +190,6 @@ void ABlackJack::Hit()
 			Sum -= 10;
 		}
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Player sum %d"),Sum); //UI¿¡ ¿¬°áÇÏ±â
+	UE_LOG(LogTemp, Warning, TEXT("Player sum %d"),Sum); //UIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½
 	return Sum;
 }
