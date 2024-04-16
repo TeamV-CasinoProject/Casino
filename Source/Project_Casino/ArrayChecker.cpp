@@ -33,19 +33,3 @@ void UArrayChecker::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 }
 
 
-
-void UArrayChecker::Check(TArray<float> arr)
-{
-	float NewArr[6][6] = {};
-
-	for (int i = 0; i < 6; i++)
-	{
-		for (int j = 0; j < 6; j++)
-		{
-			NewArr[i][j] = arr[(6 * i) + (j + 1)];
-
-		}
-	}
-
-
-}
