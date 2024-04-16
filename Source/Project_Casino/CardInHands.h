@@ -17,10 +17,8 @@ class PROJECT_CASINO_API ACardInHands : public AActor
 public:	
 	ACardInHands();
 	ACardInHands(Card);
-	//virtual void Tick(float DeltaTime) override;
 
 protected:
-	//virtual void BeginPlay() override;
 
 public:		
 	UFUNCTION()
@@ -33,5 +31,5 @@ private:
 	Card Myself;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* CardMesh;
+	UStaticMeshComponent* BaseMesh;
 };

@@ -6,10 +6,16 @@
 
 ACardInHands::ACardInHands()
 {
-	//PrimaryActorTick.bCanEverTick = true;
+	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Base Mesh"));
+	RootComponent = BaseMesh;
 
-	CardMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Base Mesh"));
-	RootComponent = CardMesh;
+	UStaticMesh* CardMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/shuby/CardMesh"));
+	if (CardMesh)
+	{
+		BaseMesh->SetStaticMesh(CardMesh);
+
+		BaseMesh->SetWorldScale3D(FVector(1.0f, 1.0f, 1.0f));
+	}
 }
 
 ACardInHands::ACardInHands(Card _Myself)
@@ -17,21 +23,11 @@ ACardInHands::ACardInHands(Card _Myself)
 	Myself = _Myself;
 }
 
-/*void ACardInHands::BeginPlay()
-{
-	Super::BeginPlay();	
-}
-
-void ACardInHands::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}*/
-
 void ACardInHands::OnCardClicked(UPrimitiveComponent* ClickedComp, FKey ButtonClicked)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Suit isasdfasdf"));
-	/*if (Sevens)
-		Sevens->TakeATurn(Myself);*/
+	//if (Sevens)
+		//Sevens->TakeATurn(Myself);
 }
 
 void ACardInHands::SetSevensInstance(ASevens* SevensInstance)

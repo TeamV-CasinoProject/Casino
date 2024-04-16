@@ -9,20 +9,15 @@ class PROJECT_CASINO_API GamePlayer
 {
 public:
 	GamePlayer();
-	GamePlayer(bool);
 	~GamePlayer();
 
 public:
 	void RemoveCardToHands(Card);
 	void SetHands(TArray<Card>, int , int);
 	TArray<Card>* GetHands();
-	bool IsActive();
-	void Activate();
-	void Deactivate();
 	void UpdateHands();
 
 private:
 	TArray<Card> Hands;	
-	bool IsActivated;
 	int Pass;
 };

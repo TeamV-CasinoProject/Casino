@@ -16,58 +16,7 @@ void ASevens::BeginPlay()
 	SetGame();
 
 	CurrentPlayerNum = 0;
-	TurnProcess = 0;
-
-	TmpTime = 0;
 }
-/*
-void ASevens::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-	switch (TurnProcess)
-	{
-	case 0:
-		if (!Players[CurrentPlayerNum].IsActive())
-			Players[CurrentPlayerNum].Activate();
-		TurnProcess = 1;
-		break;
-
-	case 1:
-		TurnProcess = 2;
-		TurnProcess = Players[CurrentPlayerNum].TakeATurn();		
-		break;
-
-	case 3:
-		Players[CurrentPlayerNum].Deactivate();
-		CurrentPlayerNum++;
-		if (CurrentPlayerNum == 4) CurrentPlayerNum = 0;
-		Players[CurrentPlayerNum].Activate();
-		break;
-	}
-	
-}
-*/
-
-/*
-if (!Players[CurrentPlayerNum].IsActive())
-			Players[CurrentPlayerNum].Activate();
-
-if(TmpTime > 2.0)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%d has "), CurrentPlayerNum);
-		//Players[CurrentPlayerNum].TakeATurn();
-
-		Players[CurrentPlayerNum].Deactivate();
-		CurrentPlayerNum++;
-		if (CurrentPlayerNum == 4) CurrentPlayerNum = 0;
-		Players[CurrentPlayerNum].Activate();
-
-		TmpTime = 0;
-	}
-
-	TmpTime += DeltaTime;
-*/
 
 void ASevens::SetGame()
 {
@@ -101,8 +50,17 @@ void ASevens::SetGame()
 		TArray<Card> Hands = *(Players[i].GetHands());
 		for (int j = 0; j < Hands.Num(); j++)
 		{
-			FVector SpawnLocation = FVector(i * 70, j * 50, 400);
-			SpawnCard(SpawnLocation, FRotator(), FActorSpawnParameters(), Hands[i]);
+			if (i % 2 == 0)
+			{
+				FVector SpawnLocation = FVector(i * 600 - 600, j * 100 - 600, 400);
+				SpawnCard(SpawnLocation, FRotator(0, 0, 0), FActorSpawnParameters(), Hands[i]);
+			}
+			else
+			{
+				FVector SpawnLocation = FVector(j * 100 - 600, i * 1400 - 2800, 400);
+				SpawnCard(SpawnLocation, FRotator(0, 90, 0), FActorSpawnParameters(), Hands[i]);
+			}
+			
 		}
 	}
 }
@@ -142,27 +100,6 @@ void ASevens::SpawnCard(FVector SpawnLocation, FRotator Rotator, FActorSpawnPara
 		ACardInHands::StaticClass(), SpawnLocation, Rotator, SpawnParams);
 
 	NewCard->SetMyself(_Card.GetSuit(), _Card.GetNum());
-
-	/*UStaticMeshComponent* MeshComponent = NewObject<UStaticMeshComponent>(NewCard);
-	UE_LOG(LogTemp, Warning, TEXT("Card Spawned"));
-	UStaticMesh* CubeMesh = LoadObject<UStaticMesh>(nullptr, TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'"));
-	if (CubeMesh)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Mesh Spawned"));
-		MeshComponent->SetStaticMesh(CubeMesh);
-
-		UMaterial* BasicShapeMaterial = LoadObject<UMaterial>(nullptr, TEXT("Material'/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial'"));
-		if (BasicShapeMaterial)
-		{
-			MeshComponent->SetMaterial(0, BasicShapeMaterial);
-		}
-
-		MeshComponent->SetWorldScale3D(FVector(0.9f, 0.65f, 0.01f));
-
-		MeshComponent->AttachToComponent(NewCard->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-
-		MeshComponent->SetWorldLocationAndRotation(SpawnLocation, Rotator);
-	}*/
 }
 
 void ASevens::MoveToNextTurn()

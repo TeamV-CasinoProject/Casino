@@ -8,12 +8,6 @@ GamePlayer::GamePlayer()
 	Pass = 5;
 }
 
-GamePlayer::GamePlayer(bool _IsActivated)
-{
-	Pass = 5;
-	IsActivated = _IsActivated;
-}
-
 GamePlayer::~GamePlayer()
 {
 }
@@ -45,21 +39,6 @@ void GamePlayer::SetHands(TArray<Card> Deck, int Begin, int End)
 TArray<Card>* GamePlayer::GetHands()
 {
 	return &Hands;
-}
-
-bool GamePlayer::IsActive()
-{
-	return IsActivated;
-}
-
-void GamePlayer::Activate()
-{
-	IsActivated = true;
-}
-
-void GamePlayer::Deactivate()
-{
-	IsActivated = false;
 }
 
 void GamePlayer::UpdateHands()

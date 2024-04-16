@@ -21,7 +21,6 @@ class PROJECT_CASINO_API ASevens : public AGameModeBase
 	
 public:
 	ASevens();
-	virtual void Tick(float DeltaTime) override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -40,7 +39,4 @@ private:
 	TArray<GamePlayer> Players;
 
 	int CurrentPlayerNum;
-
-	float TmpTime;
-	int TurnProcess;
 };
