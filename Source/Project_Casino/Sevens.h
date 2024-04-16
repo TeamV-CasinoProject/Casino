@@ -8,9 +8,6 @@
 #include "GamePlayer.h"
 #include "CardInHands.h"
 #include "Engine/World.h"
-#include "Components/StaticMeshComponent.h"
-#include "Materials/Material.h"
-#include "Engine/StaticMesh.h"
 #include "Sevens.generated.h"
 
 class Card;

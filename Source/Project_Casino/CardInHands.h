@@ -31,4 +31,7 @@ public:
 private:
 	ASevens* Sevens;
 	Card Myself;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* CardMesh;
 };

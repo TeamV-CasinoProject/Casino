@@ -7,6 +7,9 @@
 ACardInHands::ACardInHands()
 {
 	//PrimaryActorTick.bCanEverTick = true;
+
+	CardMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Base Mesh"));
+	RootComponent = CardMesh;
 }
 
 ACardInHands::ACardInHands(Card _Myself)
@@ -26,8 +29,9 @@ void ACardInHands::Tick(float DeltaTime)
 
 void ACardInHands::OnCardClicked(UPrimitiveComponent* ClickedComp, FKey ButtonClicked)
 {
-	if (Sevens)
-		Sevens->TakeATurn(Myself);
+	UE_LOG(LogTemp, Warning, TEXT("Suit isasdfasdf"));
+	/*if (Sevens)
+		Sevens->TakeATurn(Myself);*/
 }
 
 void ACardInHands::SetSevensInstance(ASevens* SevensInstance)

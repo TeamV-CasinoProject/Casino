@@ -143,7 +143,7 @@ void ASevens::SpawnCard(FVector SpawnLocation, FRotator Rotator, FActorSpawnPara
 
 	NewCard->SetMyself(_Card.GetSuit(), _Card.GetNum());
 
-	UStaticMeshComponent* MeshComponent = NewObject<UStaticMeshComponent>(NewCard);
+	/*UStaticMeshComponent* MeshComponent = NewObject<UStaticMeshComponent>(NewCard);
 	UE_LOG(LogTemp, Warning, TEXT("Card Spawned"));
 	UStaticMesh* CubeMesh = LoadObject<UStaticMesh>(nullptr, TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'"));
 	if (CubeMesh)
@@ -162,7 +162,7 @@ void ASevens::SpawnCard(FVector SpawnLocation, FRotator Rotator, FActorSpawnPara
 		MeshComponent->AttachToComponent(NewCard->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 
 		MeshComponent->SetWorldLocationAndRotation(SpawnLocation, Rotator);
-	}
+	}*/
 }
 
 void ASevens::MoveToNextTurn()
