@@ -7,6 +7,7 @@
 #include "Math/UnrealMathUtility.h"
 #include "GamePlayer.h"
 #include "CardInHands.h"
+#include "PlayerPawn.h"
 #include "Engine/World.h"
 #include "Sevens.generated.h"
 

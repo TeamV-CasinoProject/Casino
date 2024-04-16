@@ -7,6 +7,8 @@
 ASevens::ASevens()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	DefaultPawnClass = APlayerPawn::StaticClass();
 }
 
 void ASevens::BeginPlay()
