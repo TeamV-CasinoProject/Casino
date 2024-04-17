@@ -23,9 +23,14 @@ ACardInHands::ACardInHands(Card _Myself)
 	Myself = _Myself;
 }
 
-void ACardInHands::OnCardClicked(UPrimitiveComponent* ClickedComp, FKey ButtonClicked)
+void ACardInHands::BeginPlay()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Suit isasdfasdf"));
+	
+}
+
+void ACardInHands::OnActorClicked(UPrimitiveComponent* ClickedComp, FKey ButtonClicked)
+{
+	UE_LOG(LogTemp, Warning, TEXT("finally 22..."));
 	//if (Sevens)
 		//Sevens->TakeATurn(Myself);
 }
