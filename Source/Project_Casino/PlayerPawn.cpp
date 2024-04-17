@@ -9,8 +9,6 @@ APlayerPawn::APlayerPawn()
 
 	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Base Mesh"));
 	RootComponent = BaseMesh;
-
-	//ShowMouseCursor(true);
 }
 
 void APlayerPawn::BeginPlay()
@@ -31,12 +29,3 @@ void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
-
-//void APlayerPawn::ShowMouseCursor(bool bShowCursor)
-//{
-//	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-//	if (PlayerController)
-//	{
-//		PlayerController->bShowMouseCursor = bShowCursor;
-//	}
-//}
