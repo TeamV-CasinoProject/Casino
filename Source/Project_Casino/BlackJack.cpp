@@ -89,6 +89,11 @@ void ABlackJack::Calc()
 	else
 		if (PlayerList[PlayerCount].CalcSum() < 16)
 			Hit();
+		else if (PlayerList[PlayerCount].CalcSum() > 21)
+		{
+			PlayerList[PlayerPoint].Sum = 0;
+			RoundEnd();
+		}
 		else
 			RoundEnd();
 }

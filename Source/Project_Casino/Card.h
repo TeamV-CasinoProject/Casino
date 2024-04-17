@@ -12,7 +12,6 @@ class PROJECT_CASINO_API Card
 public:
 	Card(int s, int n);
 
-public:
 	int Suit;
 	int Num;
 };
