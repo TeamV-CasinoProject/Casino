@@ -21,4 +21,7 @@ protected:
 
 public:	
 	void ShowMouseCursor(bool bShowCursor);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* BaseMesh;
 };

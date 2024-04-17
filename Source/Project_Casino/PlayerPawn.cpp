@@ -7,9 +7,10 @@ APlayerPawn::APlayerPawn()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	ShowMouseCursor(true);
+	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Base Mesh"));
+	RootComponent = BaseMesh;
 
-	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+	ShowMouseCursor(true);
 }
 
 void APlayerPawn::BeginPlay()
