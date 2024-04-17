@@ -17,7 +17,6 @@ AWinChecker::AWinChecker()
 void AWinChecker::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
@@ -53,10 +52,10 @@ TArray<AActor*> AWinChecker::Sorting(TArray<AActor*> arr)
 			Subarr[i] = arr[i + 6];
 		// 7 ~ 9 & 25 ~ 27
 		if ((i >= 6 && i <= 8) || (i >= 24 && i <= 26))
-			Subarr[i] = arr[i + 3];
+			Subarr[i] = arr[i - 3];
 		// 10 ~ 12 & 28 ~ 30
 		if ((i >= 9 && i <= 11) || (i >= 27 && i <= 29))
-			Subarr[i] = arr[i - 3];
+			Subarr[i] = arr[i + 3];
 		// 13 ~ 15 & 31 ~ 33
 		if ((i >= 12 && i <= 14) || (i >= 30 && i <= 32))
 			Subarr[i] = arr[i - 6];
@@ -71,16 +70,14 @@ TArray<AActor*> AWinChecker::Sorting(TArray<AActor*> arr)
 		UE_LOG(LogTemp, Warning, TEXT("액터 이름: %s, 배열 순서: %d"), *ActorName, i);
 	}
 
-
 	return arr;
 }
 
 void AWinChecker::SortingAnd2D(TArray<float> arr)
 {
-	// 입력 배열의 요소 개수가 충분한지 확인합니다.
 	if (arr.Num() < 36)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Input array should have at least 36 elements"));
+		UE_LOG(LogTemp, Error, TEXT("under 36"));
 		return;
 	}
 
@@ -91,13 +88,17 @@ void AWinChecker::SortingAnd2D(TArray<float> arr)
 			NewArr[i][j] = arr[(6 * i) + j];
 		}
 	}
+
 }
+
+
+
 float AWinChecker::WinCheck()
 {
 
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 6; i++)
 	{
-		for (int j = 0; j < 2; j++)
+		for (int j = 0; j < 6; j++)
 		{
 			// 가로
 			if (NewArr[i][j] == white && NewArr[i][j + 1] == white && NewArr[i][j + 2] == white && NewArr[i][j + 3] == white && NewArr[i][j + 4] == white)
@@ -150,4 +151,3 @@ float AWinChecker::WinCheck()
 
 	return 0.0f;
 }
-

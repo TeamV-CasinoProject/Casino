@@ -34,10 +34,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "ArrCheck")
 	float WinCheck();
 
+private:
 
 	float NewArr[6][6] = {};
 	const float white = 1;
 	const float black = 2;
 
-
+	//float testA(float NewArr[6][6]);
+	//UFUNCTION(BlueprintCallable, Category = "ArrCheck")
+	//void testB();
 };
