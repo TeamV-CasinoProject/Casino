@@ -11,6 +11,16 @@ AWinChecker::AWinChecker()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	for (int i = 0; i < 6; ++i)
+	{
+		for (int j = 0; j < 6; ++j)
+		{
+			NewArr[i][j] = 0.0f;
+		}
+	}
+
+	white = 1.0f;
+	black = 2.0f;
 }
 
 // Called when the game starts or when spawned
@@ -30,14 +40,6 @@ void AWinChecker::Tick(float DeltaTime)
 TArray<AActor*> AWinChecker::Sorting(TArray<AActor*> arr)
 {
 	arr.Sort();
-
-	for (int32 Index = 0; Index < arr.Num(); ++Index)
-	{
-
-		AActor* Actor = arr[Index];
-		FString ActorName = Actor->GetName();
-		UE_LOG(LogTemp, Warning, TEXT("Actor Name: %s"), *(arr[Index]->GetName()));
-	}
 
 	TArray<AActor*> Subarr;
 	Subarr.Init(nullptr, arr.Num());
@@ -64,10 +66,6 @@ TArray<AActor*> AWinChecker::Sorting(TArray<AActor*> arr)
 	for (int i = 0; i < arr.Num(); i++)
 	{
 		arr[i] = Subarr[i];
-
-		AActor* CurrentActor = arr[i];
-		FString ActorName = CurrentActor->GetName();
-		UE_LOG(LogTemp, Warning, TEXT("액터 이름: %s, 배열 순서: %d"), *ActorName, i);
 	}
 
 	return arr;
@@ -89,13 +87,13 @@ void AWinChecker::SortingAnd2D(TArray<float> arr)
 		}
 	}
 
+
 }
 
 
 
 float AWinChecker::WinCheck()
 {
-
 	for (int i = 0; i < 6; i++)
 	{
 		for (int j = 0; j < 6; j++)
