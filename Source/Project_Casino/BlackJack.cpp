@@ -62,7 +62,7 @@ void ABlackJack::InitRound()
 
 	for (PlayerPoint = 0; PlayerPoint < PlayerCount; PlayerPoint++)
 	{
-		if(PlayerList[PlayerPoint].Hand[0].Num == PlayerList[PlayerPoint].Hand[1].Num)
+		if(PlayerList[PlayerPoint].Hand[0].GetNum() == PlayerList[PlayerPoint].Hand[1].GetNum())
 			UE_LOG(LogTemp, Warning, TEXT("%d Player  Double"), PlayerPoint);
 	}
 	PlayerPoint = 0;
@@ -82,7 +82,7 @@ void ABlackJack::Calc()
 		if (PlayerList[PlayerPoint].CalcSum() > 21)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("%d Player Burst"), PlayerPoint);
-			PlayerList[PlayerPoint].Sum = 0;
+			PlayerList[PlayerPoint].Sum = -1;
 			Stay();
 		}
 	}
@@ -91,7 +91,7 @@ void ABlackJack::Calc()
 			Hit();
 		else if (PlayerList[PlayerCount].CalcSum() > 21)
 		{
-			PlayerList[PlayerPoint].Sum = 0;
+			PlayerList[PlayerCount].Sum = 0;
 			RoundEnd();
 		}
 		else
@@ -112,6 +112,7 @@ void ABlackJack::RoundEnd()
 	int Dealer = PlayerList[PlayerCount].Sum;
 	for (int i = 0; i < PlayerCount; i++)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("%d Player Sum : %d"), i,PlayerList[i].Sum);
 		if (PlayerList[i].Sum > Dealer)
 		{
 			if (PlayerList[i].Sum == 21)
@@ -146,7 +147,7 @@ void ABlackJack::Stay()
 	if (PlayerCount == PlayerPoint)
 	{
 		IsDealerTurn = true;
-		Hit();
+		Calc();
 	}
 	else if (PlayerCount > PlayerPoint)
 	{
@@ -162,7 +163,7 @@ void ABlackJack::Insurance()
 void ABlackJack::Hit()
 {
 	Draw.Broadcast();
-	UE_LOG(LogTemp, Warning, TEXT("%d Player  %d"), PlayerPoint, Deck[DeckPoint].Num);
+	UE_LOG(LogTemp, Warning, TEXT("%d Player  %d"), PlayerPoint, Deck[DeckPoint].GetNum());
 	PlayerList[PlayerPoint].Hand.Push(Deck[DeckPoint++]);
 	Calc();
 }
@@ -180,11 +181,11 @@ int PlayerInfo::CalcSum() {
 	for (auto It = Hand.begin(); It != Hand.end(); ++It)
 	{
 		Card Element = *It;
-		if (Element.Num > 9)
+		if (Element.GetNum() > 9)
 			Sum += 10;
 		else
-			Sum += Element.Num;
-		if (Element.Num == 1)
+			Sum += Element.GetNum();
+		if (Element.GetNum() == 1)
 		{
 			AceCount++;
 			Sum += 10;
