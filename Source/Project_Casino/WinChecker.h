@@ -34,6 +34,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "ArrCheck")
 	float WinCheck();
 
+
+	int32 CheckPatterns(int32 Value);
+
 private:
 
 	float NewArr[6][6];

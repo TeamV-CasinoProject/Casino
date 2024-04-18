@@ -91,61 +91,70 @@ void AWinChecker::SortingAnd2D(TArray<float> arr)
 }
 
 
-
 float AWinChecker::WinCheck()
 {
-	for (int i = 0; i < 6; i++)
-	{
-		for (int j = 0; j < 6; j++)
-		{
-			// 가로
-			if (NewArr[i][j] == white && NewArr[i][j + 1] == white && NewArr[i][j + 2] == white && NewArr[i][j + 3] == white && NewArr[i][j + 4] == white)
-			{
-				return white;
-			}
-			else if (NewArr[i][j] == black && NewArr[i][j + 1] == black && NewArr[i][j + 2] == black && NewArr[i][j + 3] == black && NewArr[i][j + 4] == black)
-			{
-				return black;
-			}
+    int32 Result = CheckPatterns(white);
+    if (Result != 0)
+        return Result;
 
-			// 세로
-			if (NewArr[i][j] == white && NewArr[i + 1][j] == white && NewArr[i + 2][j] == white && NewArr[i + 3][j] == white && NewArr[i + 4][j] == white)
-			{
-				return white;
-			}
-			else if (NewArr[i][j] == black && NewArr[i + 1][j] == black && NewArr[i + 2][j] == black && NewArr[i + 3][j] == black && NewArr[i + 4][j] == black)
-			{
-				return black;
-			}
-		}
-	}
+    Result = CheckPatterns(black);
+    if (Result != 0)
+        return Result;
 
-	// 대각선 
-	for (int i = 0; i < 6; i++)
-	{
-		for (int j = 0; j < 6; j++)
-		{
-			// 대각선 1
-			if (NewArr[i][j] == white && NewArr[i + 1][j + 1] == white && NewArr[i + 2][j + 2] == white && NewArr[i + 3][j + 3] == white && NewArr[i + 4][j + 4] == white)
-			{
-				return white;
-			}
-			else if (NewArr[i][j] == black && NewArr[i + 1][j + 1] == black && NewArr[i + 2][j + 2] == black && NewArr[i + 3][j + 3] == black && NewArr[i + 4][j + 4] == black)
-			{
-				return black;
-			}
+    return 0.0f;
+}
 
-			// 대각선 2
-			if (NewArr[i][j] == white && NewArr[i + 1][j - 1] == white && NewArr[i + 2][j - 2] == white && NewArr[i + 3][j - 3] == white && NewArr[i + 4][j - 4] == white)
-			{
-				return white;
-			}
-			else if (NewArr[i][j] == black && NewArr[i + 1][j - 1] == black && NewArr[i + 2][j - 2] == black && NewArr[i + 3][j - 3] == black && NewArr[i + 4][j - 4] == black)
-			{
-				return black;
-			}
-		}
-	}
+int32 AWinChecker::CheckPatterns(int32 Value)
+{
+    // 가로 및 세로 검사
+    for (int i = 0; i < 6; ++i)
+    {
+        for (int j = 0; j < 6; ++j)
+        {
+            // 가로
+            if (j + 4 < 6 && NewArr[i][j] == Value && NewArr[i][j + 1] == Value && 
+                NewArr[i][j + 2] == Value && NewArr[i][j + 3] == Value && NewArr[i][j + 4] == Value)
+            {
+                if (j + 5 < 6 && NewArr[i][j + 5] == Value)
+                    return 0;
+                return Value;
+            }
 
-	return 0.0f;
+            // 세로
+            if (i + 4 < 6 && NewArr[i][j] == Value && NewArr[i + 1][j] == Value && 
+                NewArr[i + 2][j] == Value && NewArr[i + 3][j] == Value && NewArr[i + 4][j] == Value)
+            {
+                if (i + 5 < 6 && NewArr[i + 5][j] == Value)
+                    return 0;
+                return Value;
+            }
+        }
+    }
+
+    // 대각선 검사
+    for (int i = 0; i < 6; ++i)
+    {
+        for (int j = 0; j < 6; ++j)
+        {
+            // 대각선 1
+            if (i + 4 < 6 && j + 4 < 6 && NewArr[i][j] == Value && NewArr[i + 1][j + 1] == Value && 
+                NewArr[i + 2][j + 2] == Value && NewArr[i + 3][j + 3] == Value && NewArr[i + 4][j + 4] == Value)
+            {
+                if (i + 5 < 6 && j + 5 < 6 && NewArr[i + 5][j + 5] == Value)
+                    return 0;
+                return Value;
+            }
+
+            // 대각선 2
+            if (i + 4 < 6 && j - 4 >= 0 && NewArr[i][j] == Value && NewArr[i + 1][j - 1] == Value && 
+                NewArr[i + 2][j - 2] == Value && NewArr[i + 3][j - 3] == Value && NewArr[i + 4][j - 4] == Value)
+            {
+                if (i + 5 < 6 && j - 5 >= 0 && NewArr[i + 5][j - 5] == Value)
+                    return 0;
+                return Value;
+            }
+        }
+    }
+
+    return 0;
 }
