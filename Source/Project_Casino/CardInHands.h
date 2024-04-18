@@ -20,7 +20,7 @@ public:
 	virtual void BeginPlay() override;
 
 protected:
-	void OnActorClicked(UPrimitiveComponent* ClickedComp, FKey ButtonClicked);
+	void ActorOnClicked(UPrimitiveComponent* TouchedActor, FKey ButtonPressed);
 
 public:		
 	UFUNCTION()
