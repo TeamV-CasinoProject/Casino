@@ -39,7 +39,7 @@ void AWinChecker::Tick(float DeltaTime)
 
 TArray<AActor*> AWinChecker::Sorting(TArray<AActor*> arr)
 {
-	arr.Sort();
+	arr.Sort(); 
 
 	TArray<AActor*> Subarr;
 	Subarr.Init(nullptr, arr.Num());
@@ -70,6 +70,7 @@ TArray<AActor*> AWinChecker::Sorting(TArray<AActor*> arr)
 
 	return arr;
 }
+
 
 void AWinChecker::SortingAnd2D(TArray<float> arr)
 {
