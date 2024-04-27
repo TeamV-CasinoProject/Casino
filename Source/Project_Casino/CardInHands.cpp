@@ -18,26 +18,30 @@ ACardInHands::ACardInHands()
 	}
 }
 
-ACardInHands::ACardInHands(Card _Myself)
-{
-	Myself = _Myself;
-}
-
 void ACardInHands::BeginPlay()
 {
 	
 }
 
-void ACardInHands::OnActorClicked(UPrimitiveComponent* ClickedComp, FKey ButtonClicked)
+void ACardInHands::NotifyActorOnClicked(FKey ButtonPressed)
 {
-	UE_LOG(LogTemp, Warning, TEXT("finally 22..."));
-	//if (Sevens)
-		//Sevens->TakeATurn(Myself);
-}
+	UE_LOG(LogTemp, Warning, TEXT("Card is %d, %d"), Myself.GetSuit(), Myself.GetNum());
+	if (ASevens::CurrentPlayerNum == 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("My Turns Started : %d"), ASevens::CurrentPlayerNum);
+		TakeATurn();		
+	}		
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AI Turns Started : %d"), ASevens::CurrentPlayerNum);
+		TakeATurn();
+	}
 
-void ACardInHands::SetSevensInstance(ASevens* SevensInstance)
-{
-	Sevens = SevensInstance;
+	if (DestroyButton == 1)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("DDD"));
+		ACardInHands::Destroy();
+	}
 }
 
 void ACardInHands::SetMyself(int Suit, int Num)
@@ -45,5 +49,17 @@ void ACardInHands::SetMyself(int Suit, int Num)
 	Myself.SetCard(Suit, Num);
 }
 
+void ACardInHands::TakeATurn()
+{
+	//ASevens::Players[ASevens::CurrentPlayerNum].RemoveCardToHands(Myself);
+	//PlayCard();
+	MoveToNextTurn();
 
+	DestroyButton = 1;
+}
 
+void ACardInHands::MoveToNextTurn()
+{
+	ASevens::CurrentPlayerNum++;
+	if (ASevens::CurrentPlayerNum == 4) ASevens::CurrentPlayerNum = 0;
+}

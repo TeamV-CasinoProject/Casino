@@ -15,8 +15,8 @@ void APlayerPawn::BeginPlay()
 {
 	Super::BeginPlay();	
 
-	SetActorLocation(FVector(-1100, 0, 1440));
-	SetActorRotation(FRotator(0, 0, 5));
+	SetActorLocation(FVector(0.0f, 0.0f, 1440.0f));
+	SetActorRotation(FRotator(-90.0f, 0.0f, 0.0f));
 }
 
 void APlayerPawn::Tick(float DeltaTime)

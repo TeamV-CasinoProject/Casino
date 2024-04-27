@@ -7,7 +7,6 @@
 #include "Math/UnrealMathUtility.h"
 #include "GamePlayer.h"
 #include "CardInHands.h"
-#include "PlayerPawn.h"
 #include "Engine/World.h"
 #include "Sevens.generated.h"
 
@@ -30,14 +29,14 @@ public:
 	void SetGame();
 	void SetPlayers();
 	void ShuffleDeck(TArray<Card>&);
-	void TakeATurn(Card);
 	void SpawnCard(FVector, FRotator, FActorSpawnParameters, Card);
-	void MoveToNextTurn();
-	void PlayCard();
+
+	static int CurrentPlayerNum;
+	static TArray<Card> Deck;
+	static TArray<GamePlayer> Players;
 
 private:
-	TArray<Card> Deck;
-	TArray<GamePlayer> Players;
 
-	int CurrentPlayerNum;
 };
+
+int ASevens::CurrentPlayerNum = 0;

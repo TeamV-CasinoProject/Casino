@@ -14,8 +14,6 @@ GamePlayer::~GamePlayer()
 
 void GamePlayer::RemoveCardToHands(Card Selected)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Proceed Turn..."));
-
 	for (int i = 0; i < Hands.Num(); i++)
 	{
 		if (Hands[i].CheckEquality(Selected))
@@ -25,6 +23,11 @@ void GamePlayer::RemoveCardToHands(Card Selected)
 		}
 	}
 
+	UE_LOG(LogTemp, Warning, TEXT("-- Remaining Cards --"));
+	for (int i = 0; i < Hands.Num(); i++)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%d, %d"), Hands[i].GetSuit(), Hands[i].GetNum());
+	}
 	//UpdateHands();
 }
 
@@ -45,4 +48,6 @@ void GamePlayer::UpdateHands()
 {
 	//화면에 보여지는 패의 카드들을 정리(위치, 겹치는 정도 등)하는 코드
 	//어쩌면 CardInHands 클래스 쪽에서 맡을지도
+
+
 }

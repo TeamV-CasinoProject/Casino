@@ -16,21 +16,21 @@ class PROJECT_CASINO_API ACardInHands : public AActor
 	
 public:	
 	ACardInHands();
-	ACardInHands(Card);
 	virtual void BeginPlay() override;
 
 protected:
-	void OnActorClicked(UPrimitiveComponent* ClickedComp, FKey ButtonClicked);
+	virtual void NotifyActorOnClicked(FKey ButtonPressed) override;
 
 public:		
-	UFUNCTION()
-	void SetSevensInstance(ASevens* PokerInstance);
 	void SetMyself(int, int);
+	void TakeATurn();
+	void MoveToNextTurn();
 
 private:
-	ASevens* Sevens;
 	Card Myself;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* BaseMesh;
+
+	int DestroyButton;
 };

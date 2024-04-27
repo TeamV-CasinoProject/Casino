@@ -4,11 +4,12 @@
 #include "Sevens.h"
 #include "Card.h"
 
+TArray<Card> ASevens::Deck;
+TArray<GamePlayer> ASevens::Players;
+
 ASevens::ASevens()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
-	DefaultPawnClass = APlayerPawn::StaticClass();
 }
 
 void ASevens::BeginPlay()
@@ -18,6 +19,8 @@ void ASevens::BeginPlay()
 	SetGame();
 
 	CurrentPlayerNum = 0;
+	Deck.Empty();
+	Players.Empty();
 }
 
 void ASevens::SetGame()
@@ -55,12 +58,12 @@ void ASevens::SetGame()
 			if (i % 2 == 0)
 			{
 				FVector SpawnLocation = FVector(i * 600 - 600, j * 100 - 600, 400);
-				SpawnCard(SpawnLocation, FRotator(0, 0, 0), FActorSpawnParameters(), Hands[i]);
+				SpawnCard(SpawnLocation, FRotator(0, 0, 0), FActorSpawnParameters(), Hands[j]);
 			}
 			else
 			{
 				FVector SpawnLocation = FVector(j * 100 - 600, i * 1400 - 2800, 400);
-				SpawnCard(SpawnLocation, FRotator(0, 90, 0), FActorSpawnParameters(), Hands[i]);
+				SpawnCard(SpawnLocation, FRotator(0, 90, 0), FActorSpawnParameters(), Hands[j]);
 			}
 			
 		}
@@ -88,29 +91,10 @@ void ASevens::ShuffleDeck(TArray<Card>& _Deck)
 	}
 }
 
-void ASevens::TakeATurn(Card Selected)
-{
-	Players[CurrentPlayerNum].RemoveCardToHands(Selected);
-
-	//PlayCard();
-	MoveToNextTurn();
-}
-
 void ASevens::SpawnCard(FVector SpawnLocation, FRotator Rotator, FActorSpawnParameters SpawnParams, Card _Card)
 {
 	ACardInHands* NewCard = GetWorld()->SpawnActor<ACardInHands>(
 		ACardInHands::StaticClass(), SpawnLocation, Rotator, SpawnParams);
 
 	NewCard->SetMyself(_Card.GetSuit(), _Card.GetNum());
-}
-
-void ASevens::MoveToNextTurn()
-{
-	CurrentPlayerNum++;
-	if (CurrentPlayerNum == 4) CurrentPlayerNum = 0;
-}
-
-void ASevens::PlayCard()
-{
-	//카드를 내는 작업 - 실제 카드 인스턴스를 생성하고 화면의 적절한 위치로 이동
 }
