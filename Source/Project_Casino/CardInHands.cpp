@@ -16,8 +16,6 @@ ACardInHands::ACardInHands()
 
 		BaseMesh->SetWorldScale3D(FVector(1.0f, 1.0f, 1.0f));
 	}
-
-	BaseMesh->OnClicked.AddDynamic(this, &ACardInHands::ActorOnClicked);
 }
 
 ACardInHands::ACardInHands(Card _Myself)
@@ -27,16 +25,14 @@ ACardInHands::ACardInHands(Card _Myself)
 
 void ACardInHands::BeginPlay()
 {
-	BaseMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	BaseMesh->SetVisibility(true);
 	
 }
 
-void ACardInHands::ActorOnClicked(UPrimitiveComponent* TouchedActor, FKey ButtonPressed)
+void ACardInHands::OnActorClicked(UPrimitiveComponent* ClickedComp, FKey ButtonClicked)
 {
 	UE_LOG(LogTemp, Warning, TEXT("finally 22..."));
-	/*if (Sevens)
-		Sevens->TakeATurn(Myself);*/
+	//if (Sevens)
+		//Sevens->TakeATurn(Myself);
 }
 
 void ACardInHands::SetSevensInstance(ASevens* SevensInstance)

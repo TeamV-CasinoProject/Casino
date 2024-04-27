@@ -43,5 +43,6 @@ TArray<Card>* GamePlayer::GetHands()
 
 void GamePlayer::UpdateHands()
 {
-	//ì¹´ë“œê°€ í…Œì´ë¸”ì— ë†“ì´ê³  íŒ¨ì—ì„œ ì‚¬ë¼ì§€ëŠ” ë“±ì˜ ì¹´ë“œ ì •ë¦¬
+	//È­¸é¿¡ º¸¿©Áö´Â ÆÐÀÇ Ä«µåµéÀ» Á¤¸®(À§Ä¡, °ãÄ¡´Â Á¤µµ µî)ÇÏ´Â ÄÚµå
+	//¾îÂ¼¸é CardInHands Å¬·¡½º ÂÊ¿¡¼­ ¸ÃÀ»Áöµµ
 }
