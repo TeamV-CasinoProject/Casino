@@ -4,9 +4,6 @@
 #include "Sevens.h"
 #include "Card.h"
 
-TArray<Card> ASevens::Deck;
-TArray<GamePlayer> ASevens::Players;
-
 ASevens::ASevens()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -19,8 +16,12 @@ void ASevens::BeginPlay()
 	SetGame();
 
 	CurrentPlayerNum = 0;
-	Deck.Empty();
-	Players.Empty();
+	for (int i = 0; i < PlayerNum; i++)
+	{
+		Players2[i] = 13;
+		Passes[i] = 5;
+		Line[i] = 707;
+	}
 }
 
 void ASevens::SetGame()
@@ -57,12 +58,12 @@ void ASevens::SetGame()
 		{
 			if (i % 2 == 0)
 			{
-				FVector SpawnLocation = FVector(i * 600 - 600, j * 100 - 600, 400);
+				FVector SpawnLocation = FVector(i * 350 - 350, j * 35 - 210, 350);
 				SpawnCard(SpawnLocation, FRotator(0, 0, 0), FActorSpawnParameters(), Hands[j]);
 			}
 			else
 			{
-				FVector SpawnLocation = FVector(j * 100 - 600, i * 1400 - 2800, 400);
+				FVector SpawnLocation = FVector(j * 35 - 210, (i - 1) * 750 - 750, 350);
 				SpawnCard(SpawnLocation, FRotator(0, 90, 0), FActorSpawnParameters(), Hands[j]);
 			}
 			
@@ -74,7 +75,8 @@ void ASevens::SetPlayers()
 {
 	for (int i = 0; i < PlayerNum; i++)
 	{
-		Players.Push(GamePlayer());
+		GamePlayer New = GamePlayer();
+		Players.Add(New);
 	}
 }
 

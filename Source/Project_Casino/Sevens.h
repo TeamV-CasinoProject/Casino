@@ -13,6 +13,7 @@
 class Card;
 
 static const int PlayerNum = 4;
+static const int SuitNum = 4;
 
 UCLASS()
 class PROJECT_CASINO_API ASevens : public AGameModeBase
@@ -30,13 +31,20 @@ public:
 	void SetPlayers();
 	void ShuffleDeck(TArray<Card>&);
 	void SpawnCard(FVector, FRotator, FActorSpawnParameters, Card);
+	//static void RemoveCard(int, Card);
 
 	static int CurrentPlayerNum;
-	static TArray<Card> Deck;
-	static TArray<GamePlayer> Players;
-
+	static int Players2[PlayerNum];
+	static int Passes[PlayerNum];
+	static int Line[SuitNum];
+	
 private:
+	TArray<Card> Deck;
+	TArray<GamePlayer> Players;
 
 };
 
 int ASevens::CurrentPlayerNum = 0;
+int ASevens::Players2[PlayerNum]{ 0, 0, 0, 0 };
+int ASevens::Passes[PlayerNum]{ 0, 0, 0, 0 };
+int ASevens::Line[SuitNum]{ 0, 0, 0, 0 };

@@ -1,18 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GamePlayer.h"
+#include "SevensPlayer.h"
 
-GamePlayer::GamePlayer()
+USevensPlayer::USevensPlayer()
 {
 	Pass = 5;
 }
 
-GamePlayer::~GamePlayer()
-{
-}
-
-void GamePlayer::RemoveCardToHands(Card Selected)
+void USevensPlayer::RemoveCardToHands(Card Selected)
 {
 	for (int i = 0; i < Hands.Num(); i++)
 	{
@@ -31,7 +27,7 @@ void GamePlayer::RemoveCardToHands(Card Selected)
 	//UpdateHands();
 }
 
-void GamePlayer::SetHands(TArray<Card> Deck, int Begin, int End)
+void USevensPlayer::SetHands(TArray<Card> Deck, int Begin, int End)
 {
 	for (int i = Begin; i < End; i++)
 	{
@@ -39,12 +35,12 @@ void GamePlayer::SetHands(TArray<Card> Deck, int Begin, int End)
 	}
 }
 
-TArray<Card>* GamePlayer::GetHands()
+TArray<Card>* USevensPlayer::GetHands()
 {
 	return &Hands;
 }
 
-void GamePlayer::UpdateHands()
+void USevensPlayer::UpdateHands()
 {
 	//화면에 보여지는 패의 카드들을 정리(위치, 겹치는 정도 등)하는 코드
 	//어쩌면 CardInHands 클래스 쪽에서 맡을지도

@@ -5,7 +5,7 @@
 #include "Card.h"
 #include "CoreMinimal.h"
 
-class PROJECT_CASINO_API GamePlayer
+static class PROJECT_CASINO_API GamePlayer
 {
 public:
 	GamePlayer();
