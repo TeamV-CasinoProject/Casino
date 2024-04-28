@@ -30,21 +30,19 @@ public:
 	void SetGame();
 	void SetPlayers();
 	void ShuffleDeck(TArray<Card>&);
-	void SpawnCard(FVector, FRotator, FActorSpawnParameters, Card);
-	//static void RemoveCard(int, Card);
+	void SpawnCard(FVector, FRotator, FActorSpawnParameters, Card, int);
 
 	static int CurrentPlayerNum;
-	static int Players2[PlayerNum];
+	static int PlayerCards[PlayerNum];
 	static int Passes[PlayerNum];
 	static int Line[SuitNum];
 	
 private:
 	TArray<Card> Deck;
 	TArray<GamePlayer> Players;
-
 };
 
 int ASevens::CurrentPlayerNum = 0;
-int ASevens::Players2[PlayerNum]{ 0, 0, 0, 0 };
+int ASevens::PlayerCards[PlayerNum]{ 0, 0, 0, 0 };
 int ASevens::Passes[PlayerNum]{ 0, 0, 0, 0 };
 int ASevens::Line[SuitNum]{ 0, 0, 0, 0 };

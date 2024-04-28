@@ -18,7 +18,7 @@ void ASevens::BeginPlay()
 	CurrentPlayerNum = 0;
 	for (int i = 0; i < PlayerNum; i++)
 	{
-		Players2[i] = 13;
+		PlayerCards[i] = 13;
 		Passes[i] = 5;
 		Line[i] = 707;
 	}
@@ -38,12 +38,6 @@ void ASevens::SetGame()
 	//Shuffle Card
 	ShuffleDeck(Deck);
 
-	//Print Test
-	for (int i = 0; i < Deck.Num(); i++)
-	{
-		Deck[i].PrintSuit();
-	}
-
 	//Hand Out Cards to Players
 	for (int i = 0; i < PlayerNum; i++)
 	{
@@ -59,12 +53,12 @@ void ASevens::SetGame()
 			if (i % 2 == 0)
 			{
 				FVector SpawnLocation = FVector(i * 350 - 350, j * 35 - 210, 350);
-				SpawnCard(SpawnLocation, FRotator(0, 0, 0), FActorSpawnParameters(), Hands[j]);
+				SpawnCard(SpawnLocation, FRotator(0, 0, 0), FActorSpawnParameters(), Hands[j], i);
 			}
 			else
 			{
 				FVector SpawnLocation = FVector(j * 35 - 210, (i - 1) * 750 - 750, 350);
-				SpawnCard(SpawnLocation, FRotator(0, 90, 0), FActorSpawnParameters(), Hands[j]);
+				SpawnCard(SpawnLocation, FRotator(0, 90, 0), FActorSpawnParameters(), Hands[j], i);
 			}
 			
 		}
@@ -93,10 +87,11 @@ void ASevens::ShuffleDeck(TArray<Card>& _Deck)
 	}
 }
 
-void ASevens::SpawnCard(FVector SpawnLocation, FRotator Rotator, FActorSpawnParameters SpawnParams, Card _Card)
+void ASevens::SpawnCard(FVector SpawnLocation, FRotator Rotator, FActorSpawnParameters SpawnParams, Card _Card, int Num)
 {
 	ACardInHands* NewCard = GetWorld()->SpawnActor<ACardInHands>(
 		ACardInHands::StaticClass(), SpawnLocation, Rotator, SpawnParams);
 
 	NewCard->SetMyself(_Card.GetSuit(), _Card.GetNum());
+	NewCard->SetPlayerNum(Num);
 }

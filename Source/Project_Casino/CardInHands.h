@@ -23,20 +23,27 @@ protected:
 	virtual void NotifyActorOnClicked(FKey ButtonPressed) override;
 
 public:		
-	void SetMyself(int, int);
-	void TakeATurn(int);
+	void TakePlayerTurn(int);
+	void TakeAITurn();
 	void MoveToNextTurn();
 	void SendCardToTable();
 	bool CheckCardSendable();
 	void MarkSendableCard();
+	void SetMyself(int, int);
+	int GetMyself();
+	void SetPlayerNum(int);
+	int GetPlayerNum();
+	bool GetIsClickable();
 
 private:
 	Card Myself;
 	bool IsClickable;
+	int PlayerNum;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* BaseMesh;
 
 	UTextRenderComponent* TextComponent;
-	
+
+	FTimerHandle TimerHandle;	
 };
