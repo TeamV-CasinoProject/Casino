@@ -25,6 +25,8 @@ protected:
 public:		
 	void TakePlayerTurn(int);
 	void TakeAITurn();
+	UFUNCTION(BlueprintCallable, Category = "SevensValues")
+	void PassTurn();
 	void MoveToNextTurn();
 	void SendCardToTable();
 	bool CheckCardSendable();
@@ -33,7 +35,7 @@ public:
 	int GetMyself();
 	void SetPlayerNum(int);
 	int GetPlayerNum();
-	bool GetIsClickable();
+	bool GetIsClickable();	
 
 private:
 	Card Myself;

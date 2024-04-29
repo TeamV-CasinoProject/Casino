@@ -21,6 +21,7 @@ void ASevens::BeginPlay()
 		PlayerCards[i] = 13;
 		Passes[i] = 5;
 		Line[i] = 707;
+		IsHasLost[i] = 707;
 	}
 }
 

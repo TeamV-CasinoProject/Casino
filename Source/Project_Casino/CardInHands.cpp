@@ -12,7 +12,7 @@ ACardInHands::ACardInHands()
 	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Base Mesh"));
 	RootComponent = BaseMesh;
 
-	UStaticMesh* CardMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/shuby/CardMesh"));
+	UStaticMesh* CardMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/shuby/Meshes/CardMesh"));
 	if (CardMesh)
 	{
 		BaseMesh->SetStaticMesh(CardMesh);
@@ -43,41 +43,33 @@ void ACardInHands::BeginPlay()
 void ACardInHands::NotifyActorOnClicked(FKey ButtonPressed)
 {
 	//Print Test : Selected Card Data
+	UE_LOG(LogTemp, Warning, TEXT("-------------------------------"));
 	UE_LOG(LogTemp, Warning, TEXT("Card is %d, %d"), Myself.GetSuit(), Myself.GetNum());
 
-	//플레이어의 턴일 때만 동작하도록 수정(PlayerNum 이용해서 PlayerNum이 0인 경우에만 동작하도록)
 	if (IsClickable)
 	{
 		if (ASevens::CurrentPlayerNum == 0 && PlayerNum == 0)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("My Turns Started : %d"), ASevens::CurrentPlayerNum);
 			TakePlayerTurn(ASevens::CurrentPlayerNum);
 		}
 	}
 }
 
-void ACardInHands::TakePlayerTurn(int Num)
+void ACardInHands::TakePlayerTurn(int CurrentPlayerNum)
 {
-	//ASevens::Players[Num].RemoveCardToHands(Myself);
-	//UE_LOG(LogTemp, Warning, TEXT("%d"), ASevens::Players.Num());
-
 	if (CheckCardSendable())
 	{
-		ASevens::PlayerCards[Num]--;
+		ASevens::PlayerCards[CurrentPlayerNum]--;
+
+		if (ASevens::PlayerCards[CurrentPlayerNum] == 0)
+			UE_LOG(LogTemp, Warning, TEXT("Player Win! Rank is ?"));
 
 		SendCardToTable();
-		MoveToNextTurn();
+		MoveToNextTurn();		
 
-		/*if(ASevens::PlayerCards[Num] == 0)
-			UE_LOG(LogTemp, Warning, TEXT("Player%d Win!"), Num);*/
-
-		float Delay = 2.0f;
+		float Delay = 1.3f;
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this,
 			&ACardInHands::TakeAITurn, Delay, false);
-
-		//Print Test : Number of Cards Remaining 
-		for (int i = 0; i < 4; i++)
-			UE_LOG(LogTemp, Warning, TEXT("%d"), ASevens::PlayerCards[i]);
 	}
 	else
 		UE_LOG(LogTemp, Warning, TEXT("Can't Send"));
@@ -88,46 +80,94 @@ void ACardInHands::TakeAITurn()
 	TArray<AActor*> FoundCards;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACardInHands::StaticClass(), FoundCards);
 
-	float Delay = 2.0f;
+	float Delay = 1.3f;
 
 	for (AActor* Actor : FoundCards)
 	{
 		ACardInHands* Card = Cast<ACardInHands>(Actor);
 
 		if (Card->GetPlayerNum() == ASevens::CurrentPlayerNum && Card->GetIsClickable())
-		{
-			//Print Test : Current Turn Player's Cards
-			//UE_LOG(LogTemp, Warning, TEXT("Num: %d / AI: %d"), Card->GetPlayerNum(), Card->GetMyself());			
-
+		{	
 			if (Card->CheckCardSendable())
 			{
 				ASevens::PlayerCards[ASevens::CurrentPlayerNum]--;
 
 				UE_LOG(LogTemp, Warning, TEXT("AI %d Taked!"), ASevens::CurrentPlayerNum);
 
-				Card->SendCardToTable();
-				Card->MoveToNextTurn();
+				if (ASevens::PlayerCards[ASevens::CurrentPlayerNum] == 0)
+					UE_LOG(LogTemp, Warning, TEXT("AI %d Win! Rank is ?"), ASevens::CurrentPlayerNum);
 
-				/*if(ASevens::PlayerCards[Num] == 0)
-					UE_LOG(LogTemp, Warning, TEXT("Player%d Win!"), Num);*/				
+				Card->SendCardToTable();
+				Card->MoveToNextTurn();				
 
 				if(ASevens::CurrentPlayerNum != 0)
 				{					
 					GetWorld()->GetTimerManager().SetTimer(TimerHandle, this,
 						&ACardInHands::TakeAITurn, Delay, false);
 				}
+				else
+				{
+					//Print Test : Number of Cards Remaining 
+					for (int i = 0; i < 4; i++)
+						UE_LOG(LogTemp, Warning, TEXT("Remain: %d"), ASevens::PlayerCards[i]);
+
+					//Print Test : Number of Cards Remaining 
+					for (int i = 0; i < 4; i++)
+						UE_LOG(LogTemp, Warning, TEXT("Pass: %d"), ASevens::Passes[i]);
+				}
+
 				return;
 			}
 		}
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("AI %d Busted..."), ASevens::CurrentPlayerNum);
+	//Print Test : Select Pass
+	UE_LOG(LogTemp, Warning, TEXT("AI %d Passed..."), ASevens::CurrentPlayerNum);
+
+	ASevens::Passes[ASevens::CurrentPlayerNum]--;
+	if (ASevens::Passes[ASevens::CurrentPlayerNum] < 0)
+	{
+		//패스 전부 소모해서 사망
+	}
+
 	MoveToNextTurn();	
 	if (ASevens::CurrentPlayerNum != 0)
 	{
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this,
 			&ACardInHands::TakeAITurn, Delay, false);
 	}
+	else
+	{
+		//Print Test : Number of Cards Remaining 
+		for (int i = 0; i < 4; i++)
+			UE_LOG(LogTemp, Warning, TEXT("Remain: %d"), ASevens::PlayerCards[i]);
+
+		//Print Test : Number of Cards Remaining 
+		for (int i = 0; i < 4; i++)
+			UE_LOG(LogTemp, Warning, TEXT("Pass: %d"), ASevens::Passes[i]);
+	}
+}
+
+void ACardInHands::PassTurn()
+{
+	if (ASevens::CurrentPlayerNum == 0)
+	{
+		//Print Test : Select Pass
+		UE_LOG(LogTemp, Warning, TEXT("-------------------------------"));
+		UE_LOG(LogTemp, Warning, TEXT("Passed~"));
+
+		ASevens::Passes[ASevens::CurrentPlayerNum]--;
+		if (ASevens::Passes[ASevens::CurrentPlayerNum] < 0)
+		{
+			//패스 전부 소모해서 사망
+		}
+
+		MoveToNextTurn();
+
+		float Delay = 1.3f;
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this,
+			&ACardInHands::TakeAITurn, Delay, false);
+	}	
 }
 
 void ACardInHands::MoveToNextTurn()

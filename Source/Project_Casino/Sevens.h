@@ -36,6 +36,7 @@ public:
 	static int PlayerCards[PlayerNum];
 	static int Passes[PlayerNum];
 	static int Line[SuitNum];
+	static int IsHasLost[PlayerNum];
 	
 private:
 	TArray<Card> Deck;
@@ -46,3 +47,4 @@ int ASevens::CurrentPlayerNum = 0;
 int ASevens::PlayerCards[PlayerNum]{ 0, 0, 0, 0 };
 int ASevens::Passes[PlayerNum]{ 0, 0, 0, 0 };
 int ASevens::Line[SuitNum]{ 0, 0, 0, 0 };
+int ASevens::IsHasLost[PlayerNum]{ 0, 0, 0, 0 };
