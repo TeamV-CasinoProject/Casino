@@ -38,6 +38,8 @@ void ACardInHands::BeginPlay()
 	TextComponent->SetText(FText::FromString(Text));
 
 	TextComponent->SetWorldRotation(FRotator(0, 180, 0));
+
+	GameEndEvent.Broadcast();
 }
 
 void ACardInHands::NotifyActorOnClicked(FKey ButtonPressed)
@@ -48,6 +50,7 @@ void ACardInHands::NotifyActorOnClicked(FKey ButtonPressed)
 
 	if (IsClickable)
 	{
+		GameEndEvent.Broadcast();
 		if (ASevens::CurrentPlayerNum == 0 && PlayerNum == 0)
 		{
 			TakePlayerTurn(ASevens::CurrentPlayerNum);
@@ -62,7 +65,14 @@ void ACardInHands::TakePlayerTurn(int CurrentPlayerNum)
 		ASevens::PlayerCards[CurrentPlayerNum]--;
 
 		if (ASevens::PlayerCards[CurrentPlayerNum] == 0)
-			UE_LOG(LogTemp, Warning, TEXT("Player Win! Rank is ?"));
+		{
+			ASevens::Ranking++;
+			ASevens::IsHasLost[CurrentPlayerNum] = 1;
+			UE_LOG(LogTemp, Warning, TEXT("Player Win! [Ranking %d]"), ASevens::Ranking);
+
+			// Ending (Player 1st)
+			GameEndEvent.Broadcast();
+		}
 
 		SendCardToTable();
 		MoveToNextTurn();		
@@ -77,10 +87,23 @@ void ACardInHands::TakePlayerTurn(int CurrentPlayerNum)
 
 void ACardInHands::TakeAITurn()
 {
+	float Delay = 1.3f;
+
+	int CRN = ASevens::CurrentPlayerNum;
+	if (1 <= CRN && CRN <= 3 && ASevens::IsHasLost[CRN] == 1)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AI %d Waiting"), ASevens::CurrentPlayerNum);
+		MoveToNextTurn();
+		if (ASevens::CurrentPlayerNum != 0)
+		{
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, this,
+				&ACardInHands::TakeAITurn, Delay, false);
+		}
+		return;
+	}
+
 	TArray<AActor*> FoundCards;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACardInHands::StaticClass(), FoundCards);
-
-	float Delay = 1.3f;
 
 	for (AActor* Actor : FoundCards)
 	{
@@ -95,7 +118,17 @@ void ACardInHands::TakeAITurn()
 				UE_LOG(LogTemp, Warning, TEXT("AI %d Taked!"), ASevens::CurrentPlayerNum);
 
 				if (ASevens::PlayerCards[ASevens::CurrentPlayerNum] == 0)
-					UE_LOG(LogTemp, Warning, TEXT("AI %d Win! Rank is ?"), ASevens::CurrentPlayerNum);
+				{
+					ASevens::Ranking++;
+					ASevens::IsHasLost[ASevens::CurrentPlayerNum] = 1;
+					UE_LOG(LogTemp, Warning, TEXT("AI %d Win! [Ranking %d]"), ASevens::CurrentPlayerNum, ASevens::Ranking);
+
+					if (ASevens::Ranking == 4)
+					{
+						// Ending (All Ranked)
+						GameEndEvent.Broadcast();
+					}
+				}
 
 				Card->SendCardToTable();
 				Card->MoveToNextTurn();				
@@ -243,4 +276,9 @@ int ACardInHands::GetPlayerNum()
 bool ACardInHands::GetIsClickable()
 {
 	return IsClickable;
+}
+
+void ACardInHands::BroadcastGameEnd()
+{
+	GameEndEvent.Broadcast();
 }

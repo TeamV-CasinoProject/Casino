@@ -9,6 +9,7 @@
 #include "CardInHands.generated.h"
 
 class ASevens;
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameEndDelegate);
 
 UCLASS()
 class PROJECT_CASINO_API ACardInHands : public AActor
@@ -35,7 +36,11 @@ public:
 	int GetMyself();
 	void SetPlayerNum(int);
 	int GetPlayerNum();
-	bool GetIsClickable();	
+	bool GetIsClickable();
+	void BroadcastGameEnd();
+
+	UPROPERTY(BlueprintAssignable, Category = "SevensValues")
+	FGameEndDelegate GameEndEvent;
 
 private:
 	Card Myself;
