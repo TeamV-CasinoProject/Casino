@@ -59,16 +59,16 @@ void ACardInHands::TakePlayerTurn(int CurrentPlayerNum)
 {
 	if (CheckCardSendable())
 	{
-		ASevens::PlayerCards[CurrentPlayerNum]--;
+		--ASevens::PlayerCards[CurrentPlayerNum];
 
 		if (ASevens::PlayerCards[CurrentPlayerNum] == 0)
 		{
-			ASevens::Ranking++;
+			++ASevens::Ranking;	
 			ASevens::IsHasLost[CurrentPlayerNum] = 1;
 			UE_LOG(LogTemp, Warning, TEXT("Player Win! [Ranking %d]"), ASevens::Ranking);
 
 			// Ending (Player 1st)
-			GameEndEvent.Broadcast();
+			GameWinEvent.Broadcast();
 		}
 
 		SendCardToTable();
@@ -84,9 +84,17 @@ void ACardInHands::TakePlayerTurn(int CurrentPlayerNum)
 void ACardInHands::TakeAITurn()
 {
 	int CRN = ASevens::CurrentPlayerNum;
-	if (1 <= CRN && CRN <= 3 && ASevens::IsHasLost[CRN] == 1)
+	if (1 <= CRN && CRN <= 3 && (ASevens::IsHasLost[CRN] == 1 || ASevens::IsHasLost[CRN] == -1))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("AI %d Waiting"), ASevens::CurrentPlayerNum);
+		if(ASevens::IsHasLost[CRN] == 1)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("AI %d Waiting"), ASevens::CurrentPlayerNum);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("AI %d Losed"), ASevens::CurrentPlayerNum);
+		}
+
 		MoveToNextTurn();
 		if (ASevens::CurrentPlayerNum != 0)
 		{
@@ -107,21 +115,15 @@ void ACardInHands::TakeAITurn()
 		{	
 			if (Card->CheckCardSendable())
 			{
-				ASevens::PlayerCards[ASevens::CurrentPlayerNum]--;
+				--ASevens::PlayerCards[ASevens::CurrentPlayerNum];
 
 				UE_LOG(LogTemp, Warning, TEXT("AI %d Taked!"), ASevens::CurrentPlayerNum);
 
 				if (ASevens::PlayerCards[ASevens::CurrentPlayerNum] == 0)
 				{
-					ASevens::Ranking++;
+					++ASevens::Ranking;
 					ASevens::IsHasLost[ASevens::CurrentPlayerNum] = 1;
 					UE_LOG(LogTemp, Warning, TEXT("AI %d Win! [Ranking %d]"), ASevens::CurrentPlayerNum, ASevens::Ranking);
-
-					if (ASevens::Ranking == 4)
-					{
-						// Ending (All Ranked)
-						GameEndEvent.Broadcast();
-					}
 				}
 
 				Card->SendCardToTable();
@@ -143,6 +145,12 @@ void ACardInHands::TakeAITurn()
 						UE_LOG(LogTemp, Warning, TEXT("Pass: %d"), ASevens::Passes[i]);
 				}
 
+				if (ASevens::Ranking == 4)
+				{
+					// Ending (All AI is Ranked without Player)
+					GameLoseEvent.Broadcast();
+				}
+
 				return;
 			}
 		}
@@ -151,10 +159,13 @@ void ACardInHands::TakeAITurn()
 	//Print Test : Select Pass
 	UE_LOG(LogTemp, Warning, TEXT("AI %d Passed..."), ASevens::CurrentPlayerNum);
 
-	ASevens::Passes[ASevens::CurrentPlayerNum]--;
+	--ASevens::Passes[ASevens::CurrentPlayerNum];
 	if (ASevens::Passes[ASevens::CurrentPlayerNum] < 0)
 	{
 		//Failed (AI Pass Zero)
+		ASevens::IsHasLost[ASevens::CurrentPlayerNum] = -1;
+		
+		//GameLoseEvent.Broadcast();
 	}
 
 	MoveToNextTurn();	
@@ -183,10 +194,11 @@ void ACardInHands::PassTurn()
 		UE_LOG(LogTemp, Warning, TEXT("-------------------------------"));
 		UE_LOG(LogTemp, Warning, TEXT("Passed~"));
 
-		ASevens::Passes[ASevens::CurrentPlayerNum]--;
+		--ASevens::Passes[ASevens::CurrentPlayerNum];
 		if (ASevens::Passes[ASevens::CurrentPlayerNum] < 0)
 		{
 			//Failed (Player Pass Zero)
+			GameLoseEvent.Broadcast();
 		}
 
 		MoveToNextTurn();
@@ -273,5 +285,5 @@ bool ACardInHands::GetIsClickable()
 
 void ACardInHands::BroadcastGameEnd()
 {
-	GameEndEvent.Broadcast();
+	GameWinEvent.Broadcast();
 }

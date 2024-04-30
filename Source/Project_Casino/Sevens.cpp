@@ -49,6 +49,9 @@ void ASevens::SetGame()
 		for (int j = 0; j < Hands.Num(); j++) {}
 	}*/
 
+	//Dumy Card for Event Dispatcher
+	SpawnCard(FVector(0, 0, 0), FRotator(0, 0, 0), FActorSpawnParameters(), Card(), -1);
+
 	for (int i = 0; i < PlayerNum; i++)
 	{		
 		for (int j = i * 13; j < (i + 1) * 13; j++)

@@ -41,7 +41,9 @@ public:
 	void BroadcastGameEnd();
 
 	UPROPERTY(BlueprintAssignable, Category = "SevensValues")
-	FGameEndDelegate GameEndEvent;
+	FGameEndDelegate GameWinEvent;
+	UPROPERTY(BlueprintAssignable, Category = "SevensValues")
+	FGameEndDelegate GameLoseEvent;
 
 private:
 	Card Myself;
