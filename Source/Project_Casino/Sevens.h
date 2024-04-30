@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "Math/UnrealMathUtility.h"
-//#include "GamePlayer.h"
 #include "CardInHands.h"
 #include "Engine/World.h"
 #include "Sevens.generated.h"

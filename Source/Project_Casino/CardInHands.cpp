@@ -38,8 +38,6 @@ void ACardInHands::BeginPlay()
 	TextComponent->SetText(FText::FromString(Text));
 
 	TextComponent->SetWorldRotation(FRotator(0, 180, 0));
-
-	GameEndEvent.Broadcast();
 }
 
 void ACardInHands::NotifyActorOnClicked(FKey ButtonPressed)
@@ -50,7 +48,6 @@ void ACardInHands::NotifyActorOnClicked(FKey ButtonPressed)
 
 	if (IsClickable)
 	{
-		GameEndEvent.Broadcast();
 		if (ASevens::CurrentPlayerNum == 0 && PlayerNum == 0)
 		{
 			TakePlayerTurn(ASevens::CurrentPlayerNum);
@@ -77,7 +74,6 @@ void ACardInHands::TakePlayerTurn(int CurrentPlayerNum)
 		SendCardToTable();
 		MoveToNextTurn();		
 
-		float Delay = 1.3f;
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this,
 			&ACardInHands::TakeAITurn, Delay, false);
 	}
@@ -87,8 +83,6 @@ void ACardInHands::TakePlayerTurn(int CurrentPlayerNum)
 
 void ACardInHands::TakeAITurn()
 {
-	float Delay = 1.3f;
-
 	int CRN = ASevens::CurrentPlayerNum;
 	if (1 <= CRN && CRN <= 3 && ASevens::IsHasLost[CRN] == 1)
 	{
@@ -160,7 +154,7 @@ void ACardInHands::TakeAITurn()
 	ASevens::Passes[ASevens::CurrentPlayerNum]--;
 	if (ASevens::Passes[ASevens::CurrentPlayerNum] < 0)
 	{
-		//ÆÐ½º ÀüºÎ ¼Ò¸ðÇØ¼­ »ç¸Á
+		//Failed (AI Pass Zero)
 	}
 
 	MoveToNextTurn();	
@@ -192,12 +186,11 @@ void ACardInHands::PassTurn()
 		ASevens::Passes[ASevens::CurrentPlayerNum]--;
 		if (ASevens::Passes[ASevens::CurrentPlayerNum] < 0)
 		{
-			//ÆÐ½º ÀüºÎ ¼Ò¸ðÇØ¼­ »ç¸Á
+			//Failed (Player Pass Zero)
 		}
 
 		MoveToNextTurn();
 
-		float Delay = 1.3f;
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this,
 			&ACardInHands::TakeAITurn, Delay, false);
 	}	
@@ -242,7 +235,7 @@ bool ACardInHands::CheckCardSendable()
 
 void ACardInHands::MarkSendableCard()
 {
-	//³¾ ¼ö ÀÖ´Â Ä«µå¿¡ ¸¶Å· Ç¥½Ã(Å×µÎ¸® ºû, ¹à°Ô Ç¥½Ã µî)
+	//ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ Ä«ï¿½å¿¡ ï¿½ï¿½Å· Ç¥ï¿½ï¿½(ï¿½×µÎ¸ï¿½ ï¿½ï¿½, ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ ï¿½ï¿½)
 
 	/*if (CheckCardSendable())
 	{

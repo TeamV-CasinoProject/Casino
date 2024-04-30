@@ -10,10 +10,11 @@
 
 class ASevens;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameEndDelegate);
+//static const int Delay = 1.3f;
 
 UCLASS()
 class PROJECT_CASINO_API ACardInHands : public AActor
-{
+{ 
 	GENERATED_BODY()
 	
 public:	
@@ -46,6 +47,7 @@ private:
 	Card Myself;
 	bool IsClickable;
 	int PlayerNum;
+	float Delay = 0.3f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* BaseMesh;
