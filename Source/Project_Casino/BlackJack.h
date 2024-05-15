@@ -11,14 +11,13 @@
  * 
  */
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDrawDeligate);
 
 
 class PlayerInfo
 {
 public:
 	TArray<Card> Hand;
-
+	TArray<UObject*>CardActor;
 	int Sum;
 	int First;
 	int Second;
@@ -29,6 +28,11 @@ public:
 	int CalcSum();
 private:
 };
+
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FChangePlayer);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndRound);
 
 UCLASS()
 class PROJECT_CASINO_API ABlackJack : public AGameModeBase
@@ -49,26 +53,52 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "BlackJack")
 	void Stay();// ������
 	UFUNCTION(BlueprintCallable, Category = "BlackJack")
-	void Insurance(); 
+	void Insurance();
 	//����� ������ϰŶ� �����ɶ� ���ñݾ��� ���ݱ��� �������� �߰����� ������̸� ������� �ι� �ƴϸ� ���� ùī�尡 A�ƴϿ��� �����ϰ� �� ����
 	UFUNCTION(BlueprintCallable, Category = "BlackJack")
 	void DoubleDown();// ���� ī�带 �ް� �� ���� �̱�� 2.5��
-	UFUNCTION(BlueprintCallable, Category = "BlackJack")
 	void Calc();//����Ʈ����, ����� ���� �������� Ȯ��
+	void AddCard(AActor* c);
+	void SpawnCard();
+
 	UFUNCTION(BlueprintCallable, Category = "BlackJack")
-	int GetPlayerPoint();
+	int Getnum();
+
 
 	void Dealer();//����� ��
 	void RoundEnd();//����� ���̳����� ���ñݾ� ����
 public:
-	UPROPERTY(BlueprintReadWrite,EditAnywhere)
-	FDrawDeligate Draw;
-
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<FVector>CardPos;
 	TArray<Card> Deck; //��
 	TArray<PlayerInfo> PlayerList; // 0~2 : �÷��̾� ������ : ���
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int PlayerPoint; //���������� Ȯ�
 	int PlayerCount;//�÷��̾��� ��
 	int DeckPoint; //ī�带 �󸶳� ����?
-	int PlayerPoint; //���������� Ȯ��
 	bool IsDealerTurn = false;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FString p1 = "";
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FString p2 = "";
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FString p3 = "";
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FString p4 = "";
+
+	UPROPERTY(BlueprintAssignable)
+	FChangePlayer ChangePlayerEvent;
+	UPROPERTY(BlueprintAssignable)
+	FEndRound EndRoundEvent;
+
+	UFUNCTION(BlueprintCallable)
+	void ChangePlayerEventTrigger()
+	{
+		ChangePlayerEvent.Broadcast();
+	}
+	void EndRoundEventTrigger()
+	{
+		EndRoundEvent.Broadcast();
+	}
 };
