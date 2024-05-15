@@ -1,18 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GamePlayer.h"
+#include "SevensPlayer.h"
 
-GamePlayer::GamePlayer()
+USevensPlayer::USevensPlayer()
 {
 	Pass = 5;
 }
 
-GamePlayer::~GamePlayer()
-{
-}
-
-void GamePlayer::RemoveCardToHands(Card Selected)
+void USevensPlayer::RemoveCardToHands(Card Selected)
 {
 	for (int i = 0; i < Hands.Num(); i++)
 	{
@@ -31,7 +27,7 @@ void GamePlayer::RemoveCardToHands(Card Selected)
 	//UpdateHands();
 }
 
-void GamePlayer::SetHands(TArray<Card> Deck, int Begin, int End)
+void USevensPlayer::SetHands(TArray<Card> Deck, int Begin, int End)
 {
 	for (int i = Begin; i < End; i++)
 	{
@@ -39,15 +35,15 @@ void GamePlayer::SetHands(TArray<Card> Deck, int Begin, int End)
 	}
 }
 
-TArray<Card>* GamePlayer::GetHands()
+TArray<Card>* USevensPlayer::GetHands()
 {
 	return &Hands;
 }
 
-void GamePlayer::UpdateHands()
+void USevensPlayer::UpdateHands()
 {
-	//È­ï¿½é¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½Ä¡, ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½)ï¿½Ï´ï¿½ ï¿½Úµï¿½
-	//ï¿½ï¿½Â¼ï¿½ï¿½ CardInHands Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	//È­¸é¿¡ º¸¿©Áö´Â ÆÐÀÇ Ä«µåµéÀ» Á¤¸®(À§Ä¡, °ãÄ¡´Â Á¤µµ µî)ÇÏ´Â ÄÚµå
+	//¾îÂ¼¸é CardInHands Å¬·¡½º ÂÊ¿¡¼­ ¸ÃÀ»Áöµµ
 
 
 }

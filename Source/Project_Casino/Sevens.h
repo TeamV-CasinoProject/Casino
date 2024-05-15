@@ -5,15 +5,16 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "Math/UnrealMathUtility.h"
-#include "GamePlayer.h"
 #include "CardInHands.h"
-#include "PlayerPawn.h"
+#include "Containers/Queue.h"
+#include "Containers/Array.h"
 #include "Engine/World.h"
 #include "Sevens.generated.h"
 
 class Card;
 
 static const int PlayerNum = 4;
+static const int SuitNum = 4;
 
 UCLASS()
 class PROJECT_CASINO_API ASevens : public AGameModeBase
@@ -28,16 +29,25 @@ protected:
 
 public:
 	void SetGame();
-	void SetPlayers();
 	void ShuffleDeck(TArray<Card>&);
-	void TakeATurn(Card);
-	void SpawnCard(FVector, FRotator, FActorSpawnParameters, Card);
-	void MoveToNextTurn();
-	void PlayCard();
+	void SpawnCard(FVector, FRotator, FActorSpawnParameters, Card, int);
 
+	static int CurrentPlayerNum;
+	static int PlayerCards[PlayerNum];
+	static int Passes[PlayerNum];
+	static int Line[SuitNum];
+	static int Ranking;
+	static int IsHasLost[PlayerNum];
+	static TQueue<int32> UnderNumQueue;
+	static TQueue<int32> UpNumQueue;
+	
 private:
 	TArray<Card> Deck;
-	TArray<GamePlayer> Players;
-
-	int CurrentPlayerNum;
 };
+
+int ASevens::CurrentPlayerNum = 0;
+int ASevens::PlayerCards[PlayerNum]{ 0, 0, 0, 0 };
+int ASevens::Passes[PlayerNum]{ 0, 0, 0, 0 };
+int ASevens::Line[SuitNum]{ 0, 0, 0, 0 };
+int ASevens::Ranking = 0;
+int ASevens::IsHasLost[PlayerNum]{ 0, 0, 0, 0 };	
