@@ -9,8 +9,8 @@
 #include "CardInHands.generated.h"
 
 class ASevens;
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameEndDelegate);
-//static const int Delay = 1.3f;
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameWinDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameLoseDelegate);
 
 UCLASS()
 class PROJECT_CASINO_API ACardInHands : public AActor
@@ -33,19 +33,20 @@ public:
 	void SendCardToTable();
 	bool CheckCardSendable();
 	void MarkSendableCard();
+	void CreateAndAddUIWidget();
 	void SetMyself(int, int);
 	int GetMyself();
 	void SetPlayerNum(int);
 	int GetPlayerNum();
 	bool GetIsClickable();
-	void BroadcastGameEnd();
-
+	
 	UPROPERTY(BlueprintAssignable, Category = "SevensValues")
-	FGameEndDelegate GameWinEvent;
+	FGameWinDelegate GameWinEvent;
 	UPROPERTY(BlueprintAssignable, Category = "SevensValues")
-	FGameEndDelegate GameLoseEvent;
+	FGameLoseDelegate GameLoseEvent;
 
 private:
+	ASevens* SevensGameMode;
 	Card Myself;
 	bool IsClickable;
 	int PlayerNum;

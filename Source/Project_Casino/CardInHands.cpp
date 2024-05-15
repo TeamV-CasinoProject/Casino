@@ -4,6 +4,9 @@
 #include "CardInHands.h"
 #include "Sevens.h"
 #include "Kismet/GameplayStatics.h"
+#include "Blueprint/UserWidget.h"
+#include "WidgetBlueprint.h"
+#include "GameFramework/PlayerController.h"
 #include "Async/Async.h"
 #include "TimerManager.h"
 
@@ -42,6 +45,7 @@ void ACardInHands::BeginPlay()
 
 void ACardInHands::NotifyActorOnClicked(FKey ButtonPressed)
 {
+	//CreateAndAddUIWidget();
 	//Print Test : Selected Card Data
 	UE_LOG(LogTemp, Warning, TEXT("-------------------------------"));
 	UE_LOG(LogTemp, Warning, TEXT("Card is %d, %d"), Myself.GetSuit(), Myself.GetNum());
@@ -69,6 +73,7 @@ void ACardInHands::TakePlayerTurn(int CurrentPlayerNum)
 
 			// Ending (Player 1st)
 			GameWinEvent.Broadcast();
+			UE_LOG(LogTemp, Warning, TEXT("Player Win22222222! [Ranking %d]"), ASevens::Ranking);
 		}
 
 		SendCardToTable();
@@ -165,7 +170,29 @@ void ACardInHands::TakeAITurn()
 		//Failed (AI Pass Zero)
 		ASevens::IsHasLost[ASevens::CurrentPlayerNum] = -1;
 		
-		//GameLoseEvent.Broadcast();
+		TArray<AActor*> LoserCards;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACardInHands::StaticClass(), LoserCards);
+
+		for (AActor* Actor : LoserCards)
+		{
+			ACardInHands* Card = Cast<ACardInHands>(Actor);
+
+			if (Card->GetPlayerNum() == ASevens::CurrentPlayerNum && Card->GetIsClickable())
+			{
+				SendCardToTable();
+
+				if(Myself.GetNum() > 7)
+				{
+					int32 Elt = Myself.GetNum() * 10 + Myself.GetSuit();
+					ASevens::UpNumQueue.Enqueue(Elt);
+				}
+				else
+				{
+					int32 Elt = -(Myself.GetNum() * 10 + Myself.GetSuit());
+					ASevens::UnderNumQueue.Enqueue(Elt);
+				}
+			}
+		}
 	}
 
 	MoveToNextTurn();	
@@ -258,6 +285,25 @@ void ACardInHands::MarkSendableCard()
 	SetActorLocation(InitPoisition);*/	
 }
 
+//void ACardInHands::CreateAndAddUIWidget()
+//{
+//	UClass* WidgetClass = LoadClass<UWidgetBlueprint>(nullptr, TEXT("/Game/shuby/UIs/UI_GameWinResult"));
+//	if (WidgetClass)
+//	{
+//		// 위젯 인스턴스 생성
+//		UUserWidget* WidgetInstance = CreateWidget(GetWorld(), WidgetClass);
+//		if (WidgetInstance)
+//		{
+//			// 뷰포트에 위젯 추가
+//			APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+//			if (PlayerController)
+//			{
+//				WidgetInstance->AddToViewport();
+//			}
+//		}
+//	}
+//}
+
 void ACardInHands::SetMyself(int Suit, int Num)
 {
 	Myself.SetCard(Suit, Num);
@@ -281,9 +327,4 @@ int ACardInHands::GetPlayerNum()
 bool ACardInHands::GetIsClickable()
 {
 	return IsClickable;
-}
-
-void ACardInHands::BroadcastGameEnd()
-{
-	GameWinEvent.Broadcast();
 }

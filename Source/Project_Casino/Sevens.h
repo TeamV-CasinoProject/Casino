@@ -6,6 +6,8 @@
 #include "GameFramework/GameModeBase.h"
 #include "Math/UnrealMathUtility.h"
 #include "CardInHands.h"
+#include "Containers/Queue.h"
+#include "Containers/Array.h"
 #include "Engine/World.h"
 #include "Sevens.generated.h"
 
@@ -27,7 +29,6 @@ protected:
 
 public:
 	void SetGame();
-	//void SetPlayers();
 	void ShuffleDeck(TArray<Card>&);
 	void SpawnCard(FVector, FRotator, FActorSpawnParameters, Card, int);
 
@@ -37,6 +38,8 @@ public:
 	static int Line[SuitNum];
 	static int Ranking;
 	static int IsHasLost[PlayerNum];
+	static TQueue<int32> UnderNumQueue;
+	static TQueue<int32> UpNumQueue;
 	
 private:
 	TArray<Card> Deck;
@@ -48,6 +51,3 @@ int ASevens::Passes[PlayerNum]{ 0, 0, 0, 0 };
 int ASevens::Line[SuitNum]{ 0, 0, 0, 0 };
 int ASevens::Ranking = 0;
 int ASevens::IsHasLost[PlayerNum]{ 0, 0, 0, 0 };	
-// 0: Playing
-// -1: Failed
-// 1: Win & Waiting

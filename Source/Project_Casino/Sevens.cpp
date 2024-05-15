@@ -4,6 +4,9 @@
 #include "Sevens.h"
 #include "Card.h"
 
+TQueue<int32> ASevens::UnderNumQueue;
+TQueue<int32> ASevens::UpNumQueue;
+
 ASevens::ASevens()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -12,7 +15,6 @@ ASevens::ASevens()
 void ASevens::BeginPlay()
 {
 	Super::BeginPlay();
-	//SetPlayers();
 	SetGame();
 
 	CurrentPlayerNum = 0;
@@ -38,17 +40,6 @@ void ASevens::SetGame()
 
 	ShuffleDeck(Deck);
 
-	/*for (int i = 0; i < PlayerNum; i++)
-	{
-		Players[i].SetHands(Deck, i * 13, (i + 1) * 13);
-	}
-
-	for (int i = 0; i < PlayerNum; i++)
-	{
-		TArray<Card> Hands = *(Players[i].GetHands());
-		for (int j = 0; j < Hands.Num(); j++) {}
-	}*/
-
 	//Dumy Card for Event Dispatcher
 	SpawnCard(FVector(0, 0, 0), FRotator(0, 0, 0), FActorSpawnParameters(), Card(), -1);
 
@@ -69,15 +60,6 @@ void ASevens::SetGame()
 		}
 	}
 }
-
-/*void ASevens::SetPlayers()
-{
-	for (int i = 0; i < PlayerNum; i++)
-	{
-		GamePlayer New = GamePlayer();
-		Players.Add(New);
-	}
-}*/
 
 void ASevens::ShuffleDeck(TArray<Card>& _Deck)
 {
