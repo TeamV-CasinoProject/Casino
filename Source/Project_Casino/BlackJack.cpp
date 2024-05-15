@@ -114,7 +114,8 @@ void ABlackJack::SpawnCard()
 		UObject* cls = StaticLoadObject(UObject::StaticClass(), nullptr, TEXT("/Script/Engine.Blueprint'/Game/Siruduk/BP/BP_TestCard.BP_TestCard'"));
 		UBlueprint* bp = Cast<UBlueprint>(cls);
 		TSubclassOf<class UObject> blockBP = (UClass*)bp->GeneratedClass;
-		FVector v = CardPos[PlayerPoint] + FVector(-5,-5, 0) * PlayerList[PlayerPoint].Hand.Num();
+		FVector v = CardPos[PlayerPoint] + FVector(-5, -5, 0) * PlayerList[PlayerPoint].Hand.Num();
+
 		UObject* c = GetWorld()->SpawnActor<UObject>(blockBP, v, FRotator(0, -90, 0));
 		ATestCard* tc = Cast<ATestCard>(c);
 		if (tc)
@@ -181,10 +182,9 @@ void ABlackJack::Insurance()
 void ABlackJack::Hit()
 {
 	UE_LOG(LogTemp, Warning, TEXT("%d Player  %d"), PlayerPoint, Deck[DeckPoint].GetNum());
-	SpawnCard();
-	PlayerList[PlayerPoint].Hand.Push(Deck[DeckPoint++]);
-	Calc();
-
+		SpawnCard();
+		PlayerList[PlayerPoint].Hand.Push(Deck[DeckPoint++]);
+		Calc();
 }
 
 /*
