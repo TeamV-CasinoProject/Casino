@@ -45,7 +45,6 @@ void ACardInHands::BeginPlay()
 
 void ACardInHands::NotifyActorOnClicked(FKey ButtonPressed)
 {
-	//CreateAndAddUIWidget();
 	//Print Test : Selected Card Data
 	UE_LOG(LogTemp, Warning, TEXT("-------------------------------"));
 	UE_LOG(LogTemp, Warning, TEXT("Card is %d, %d"), Myself.GetSuit(), Myself.GetNum());
@@ -67,13 +66,13 @@ void ACardInHands::TakePlayerTurn(int CurrentPlayerNum)
 
 		if (ASevens::PlayerCards[CurrentPlayerNum] == 0)
 		{
-			++ASevens::Ranking;	
-			ASevens::IsHasLost[CurrentPlayerNum] = 1;
-			UE_LOG(LogTemp, Warning, TEXT("Player Win! [Ranking %d]"), ASevens::Ranking);
+			++SevensGameMode->RankStack;
+			SevensGameMode->IsHasLost[CurrentPlayerNum] = 1;
+			SevensGameMode->Ranking = SevensGameMode->RankStack;
+			UE_LOG(LogTemp, Warning, TEXT("Player Win! [Ranking %d]"), SevensGameMode->RankStack);
 
 			// Ending (Player 1st)
-			GameWinEvent.Broadcast();
-			UE_LOG(LogTemp, Warning, TEXT("Player Win22222222! [Ranking %d]"), ASevens::Ranking);
+			SevensGameMode->endGame = true;
 		}
 
 		SendCardToTable();
@@ -89,9 +88,9 @@ void ACardInHands::TakePlayerTurn(int CurrentPlayerNum)
 void ACardInHands::TakeAITurn()
 {
 	int CRN = ASevens::CurrentPlayerNum;
-	if (1 <= CRN && CRN <= 3 && (ASevens::IsHasLost[CRN] == 1 || ASevens::IsHasLost[CRN] == -1))
+	if (1 <= CRN && CRN <= 3 && (SevensGameMode->IsHasLost[CRN] == 1 || SevensGameMode->IsHasLost[CRN] == -1))
 	{
-		if(ASevens::IsHasLost[CRN] == 1)
+		if(SevensGameMode->IsHasLost[CRN] == 1)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("AI %d Waiting"), ASevens::CurrentPlayerNum);
 		}
@@ -126,9 +125,9 @@ void ACardInHands::TakeAITurn()
 
 				if (ASevens::PlayerCards[ASevens::CurrentPlayerNum] == 0)
 				{
-					++ASevens::Ranking;
-					ASevens::IsHasLost[ASevens::CurrentPlayerNum] = 1;
-					UE_LOG(LogTemp, Warning, TEXT("AI %d Win! [Ranking %d]"), ASevens::CurrentPlayerNum, ASevens::Ranking);
+					++SevensGameMode->RankStack;
+					SevensGameMode->IsHasLost[ASevens::CurrentPlayerNum] = 1;
+					UE_LOG(LogTemp, Warning, TEXT("AI %d Win! [Ranking %d]"), ASevens::CurrentPlayerNum, SevensGameMode->RankStack);
 				}
 
 				Card->SendCardToTable();
@@ -150,10 +149,10 @@ void ACardInHands::TakeAITurn()
 						UE_LOG(LogTemp, Warning, TEXT("Pass: %d"), ASevens::Passes[i]);
 				}
 
-				if (ASevens::Ranking == 4)
+				if (SevensGameMode->RankStack == 4)
 				{
 					// Ending (All AI is Ranked without Player)
-					GameLoseEvent.Broadcast();
+					SevensGameMode->endGame = true;
 				}
 
 				return;
@@ -168,7 +167,7 @@ void ACardInHands::TakeAITurn()
 	if (ASevens::Passes[ASevens::CurrentPlayerNum] < 0)
 	{
 		//Failed (AI Pass Zero)
-		ASevens::IsHasLost[ASevens::CurrentPlayerNum] = -1;
+		SevensGameMode->IsHasLost[ASevens::CurrentPlayerNum] = -1;
 		
 		TArray<AActor*> LoserCards;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACardInHands::StaticClass(), LoserCards);
@@ -225,7 +224,7 @@ void ACardInHands::PassTurn()
 		if (ASevens::Passes[ASevens::CurrentPlayerNum] < 0)
 		{
 			//Failed (Player Pass Zero)
-			GameLoseEvent.Broadcast();
+			SevensGameMode->endGame = true;
 		}
 
 		MoveToNextTurn();
@@ -247,7 +246,7 @@ void ACardInHands::SendCardToTable()
 	int Num = Myself.GetNum();
 
 	SetActorRotation(FRotator(0, 0, 0));
-	SetActorLocation(FVector(150 - (Suit * 100), -450 + ((Num - 1) * 75), 300));
+	SetActorLocation(FVector(150 - (Suit * 100), -450 + ((Num - 1) * 75), 520));
 
 	IsClickable = false;
 }
@@ -284,25 +283,6 @@ void ACardInHands::MarkSendableCard()
 
 	SetActorLocation(InitPoisition);*/	
 }
-
-//void ACardInHands::CreateAndAddUIWidget()
-//{
-//	UClass* WidgetClass = LoadClass<UWidgetBlueprint>(nullptr, TEXT("/Game/shuby/UIs/UI_GameWinResult"));
-//	if (WidgetClass)
-//	{
-//		// 위젯 인스턴스 생성
-//		UUserWidget* WidgetInstance = CreateWidget(GetWorld(), WidgetClass);
-//		if (WidgetInstance)
-//		{
-//			// 뷰포트에 위젯 추가
-//			APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-//			if (PlayerController)
-//			{
-//				WidgetInstance->AddToViewport();
-//			}
-//		}
-//	}
-//}
 
 void ACardInHands::SetMyself(int Suit, int Num)
 {

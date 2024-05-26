@@ -36,10 +36,21 @@ public:
 	static int PlayerCards[PlayerNum];
 	static int Passes[PlayerNum];
 	static int Line[SuitNum];
-	static int Ranking;
-	static int IsHasLost[PlayerNum];
+	
 	static TQueue<int32> UnderNumQueue;
 	static TQueue<int32> UpNumQueue;
+
+	int IsHasLost[PlayerNum];
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int RankStack;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int Ranking;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	bool endGame;
+
+	//I finally found a way to connect with 'Sevens', 
+	//so later I change all the 'static' values and change the approach on the card
 	
 private:
 	TArray<Card> Deck;
@@ -49,5 +60,3 @@ int ASevens::CurrentPlayerNum = 0;
 int ASevens::PlayerCards[PlayerNum]{ 0, 0, 0, 0 };
 int ASevens::Passes[PlayerNum]{ 0, 0, 0, 0 };
 int ASevens::Line[SuitNum]{ 0, 0, 0, 0 };
-int ASevens::Ranking = 0;
-int ASevens::IsHasLost[PlayerNum]{ 0, 0, 0, 0 };	
