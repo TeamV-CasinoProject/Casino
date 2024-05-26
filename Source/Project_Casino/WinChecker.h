@@ -7,6 +7,7 @@
 #include "WinChecker.generated.h"
 
 
+
 class ABP_Pentago_Checker;
 UCLASS()
 class PROJECT_CASINO_API AWinChecker : public AActor
@@ -35,7 +36,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "ArrCheck")
 	float WinCheck();
 
-
 	int32 CheckPatterns(int32 Value);
 
 private:
@@ -44,7 +44,4 @@ private:
 	float white;
 	float black ;
 
-	//float testA(float NewArr[6][6]);
-	//UFUNCTION(BlueprintCallable, Category = "ArrCheck")
-	//void testB();
 };
