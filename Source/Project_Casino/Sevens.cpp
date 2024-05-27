@@ -4,25 +4,32 @@
 #include "Sevens.h"
 #include "Card.h"
 
+TQueue<int32> ASevens::UnderNumQueue;
+TQueue<int32> ASevens::UpNumQueue;
+
 ASevens::ASevens()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
-	DefaultPawnClass = APlayerPawn::StaticClass();
 }
 
 void ASevens::BeginPlay()
 {
 	Super::BeginPlay();
-	SetPlayers();
 	SetGame();
 
 	CurrentPlayerNum = 0;
+	Ranking = 0;
+	for (int i = 0; i < PlayerNum; i++)
+	{
+		PlayerCards[i] = 13;
+		Passes[i] = 5;
+		Line[i] = 707;
+		IsHasLost[i] = 0;
+	}
 }
 
 void ASevens::SetGame()
 {
-	//Reset Card
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 1; j <= 13; j++)
@@ -31,47 +38,26 @@ void ASevens::SetGame()
 		}
 	}
 
-	//Shuffle Card
 	ShuffleDeck(Deck);
 
-	//Print Test
-	for (int i = 0; i < Deck.Num(); i++)
-	{
-		Deck[i].PrintSuit();
-	}
+	//Dumy Card for Event Dispatcher
+	SpawnCard(FVector(0, 0, 0), FRotator(0, 0, 0), FActorSpawnParameters(), Card(), -1);
 
-	//Hand Out Cards to Players
 	for (int i = 0; i < PlayerNum; i++)
-	{
-		Players[i].SetHands(Deck, i * 13, (i + 1) * 13);
-	}
-
-	//패에 있는 카드를 화면에 나열하는 코드
-	for (int i = 0; i < PlayerNum; i++)
-	{
-		TArray<Card> Hands = *(Players[i].GetHands());
-		for (int j = 0; j < Hands.Num(); j++)
+	{		
+		for (int j = i * 13; j < (i + 1) * 13; j++)
 		{
 			if (i % 2 == 0)
 			{
-				FVector SpawnLocation = FVector(i * 600 - 600, j * 100 - 600, 400);
-				SpawnCard(SpawnLocation, FRotator(0, 0, 0), FActorSpawnParameters(), Hands[i]);
+				FVector SpawnLocation = FVector(i * 350 - 350, (j - (i * 13)) * 35 - 210, 350);
+				SpawnCard(SpawnLocation, FRotator(0, 0, 0), FActorSpawnParameters(), Deck[j], i);
 			}
 			else
 			{
-				FVector SpawnLocation = FVector(j * 100 - 600, i * 1400 - 2800, 400);
-				SpawnCard(SpawnLocation, FRotator(0, 90, 0), FActorSpawnParameters(), Hands[i]);
+				FVector SpawnLocation = FVector((j - (i * 13)) * 35 - 210, (i - 1) * 750 - 750, 350);
+				SpawnCard(SpawnLocation, FRotator(0, 90, 0), FActorSpawnParameters(), Deck[j], i);
 			}
-			
 		}
-	}
-}
-
-void ASevens::SetPlayers()
-{
-	for (int i = 0; i < PlayerNum; i++)
-	{
-		Players.Push(GamePlayer());
 	}
 }
 
@@ -88,29 +74,11 @@ void ASevens::ShuffleDeck(TArray<Card>& _Deck)
 	}
 }
 
-void ASevens::TakeATurn(Card Selected)
-{
-	Players[CurrentPlayerNum].RemoveCardToHands(Selected);
-
-	//PlayCard();
-	MoveToNextTurn();
-}
-
-void ASevens::SpawnCard(FVector SpawnLocation, FRotator Rotator, FActorSpawnParameters SpawnParams, Card _Card)
+void ASevens::SpawnCard(FVector SpawnLocation, FRotator Rotator, FActorSpawnParameters SpawnParams, Card _Card, int Num)
 {
 	ACardInHands* NewCard = GetWorld()->SpawnActor<ACardInHands>(
 		ACardInHands::StaticClass(), SpawnLocation, Rotator, SpawnParams);
 
 	NewCard->SetMyself(_Card.GetSuit(), _Card.GetNum());
-}
-
-void ASevens::MoveToNextTurn()
-{
-	CurrentPlayerNum++;
-	if (CurrentPlayerNum == 4) CurrentPlayerNum = 0;
-}
-
-void ASevens::PlayCard()
-{
-	//카드를 내는 작업 - 실제 카드 인스턴스를 생성하고 화면의 적절한 위치로 이동
+	NewCard->SetPlayerNum(Num);
 }

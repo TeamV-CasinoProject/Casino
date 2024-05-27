@@ -20,28 +20,29 @@ ATestCard::ATestCard()
 
 	Text2 = CreateDefaultSubobject<UTextRenderComponent>(TEXT("Text2"));
 	Text2->SetupAttachment(RootComponent);
+
 }
+
+void ATestCard::Set(int num)
+{
+	FString TextString = FString::Printf(TEXT("%d"), num);
+	FText Text = FText::FromString(TextString);
+	if (Text1)
+	{
+		Text1->SetText(Text);
+	}
+	if(Text2)
+	{
+		Text2->SetText(Text);
+	}
+}
+
+
 
 // Called when the game starts or when spawned
 void ATestCard::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (Text1)
-	{
-		//Text1->SetText(TEXT("")); // 텍스트 설정
-		Text1->SetTextRenderColor(FColor::Black); // 텍스트 색상 설정
-		//Text1->SetHorizontalAlignment(EHorizTextAligment::EHTA_Center); // 수평 정렬 설정
-		//Text1->SetVerticalAlignment(EVerticalTextAligment::EVRTA_TextCenter); // 수직 정렬 설정
-	}
-
-	if (Text2)
-	{
-		//Text2->SetText(TEXT("")); // 텍스트 설정
-		Text2->SetTextRenderColor(FColor::Black); // 텍스트 색상 설정
-		//Text2->SetHorizontalAlignment(EHorizTextAligment::EHTA_Center); // 수평 정렬 설정
-		//Text2->SetVerticalAlignment(EVerticalTextAligment::EVRTA_TextCenter); // 수직 정렬 설정
-	}
 }
 
 // Called every frame

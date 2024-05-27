@@ -14,8 +14,6 @@ GamePlayer::~GamePlayer()
 
 void GamePlayer::RemoveCardToHands(Card Selected)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Proceed Turn..."));
-
 	for (int i = 0; i < Hands.Num(); i++)
 	{
 		if (Hands[i].CheckEquality(Selected))
@@ -25,6 +23,11 @@ void GamePlayer::RemoveCardToHands(Card Selected)
 		}
 	}
 
+	UE_LOG(LogTemp, Warning, TEXT("-- Remaining Cards -- : %d"), Hands.Num());
+	for (int i = 0; i < Hands.Num(); i++)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%d, %d"), Hands[i].GetSuit(), Hands[i].GetNum());
+	}
 	//UpdateHands();
 }
 
@@ -43,6 +46,8 @@ TArray<Card>* GamePlayer::GetHands()
 
 void GamePlayer::UpdateHands()
 {
-	//È­¸é¿¡ º¸¿©Áö´Â ÆÐÀÇ Ä«µåµéÀ» Á¤¸®(À§Ä¡, °ãÄ¡´Â Á¤µµ µî)ÇÏ´Â ÄÚµå
-	//¾îÂ¼¸é CardInHands Å¬·¡½º ÂÊ¿¡¼­ ¸ÃÀ»Áöµµ
+	//È­ï¿½é¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½Ä¡, ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½)ï¿½Ï´ï¿½ ï¿½Úµï¿½
+	//ï¿½ï¿½Â¼ï¿½ï¿½ CardInHands Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+
+
 }

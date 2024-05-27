@@ -3,16 +3,14 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include "TimerManager.h"
 #include "BlackJack.h"
+#include"TestCard.h"
 
 void ABlackJack::InitGame()
 {
-	//���� ����
-	//�÷��̾� �� ���� (ȥ�� ���� ���� ����ϰ� ������ ��� �߰�)
-	//test��
-	PlayerCount = 3;//�����ϴºκ� ui�� �����
+	PlayerCount = 3;
 
-	//�÷��̾� �� + 1 ��ŭ ����
 	for (int i = 0; i < PlayerCount + 1; i++)
 	{
 		PlayerList.Push(PlayerInfo());
@@ -20,7 +18,6 @@ void ABlackJack::InitGame()
 	SetDeck();
 }
 
-// ���� ����
 void ABlackJack::SetDeck()
 {
 	for (int i = 0; i < 4; i++)
@@ -40,25 +37,26 @@ void ABlackJack::SetDeck()
 
 void ABlackJack::Bet()
 {
-	//���� �ݾ� ���ϱ� �ڸ� ����
+	for (PlayerPoint = 0; PlayerPoint < PlayerCount + 1; PlayerPoint++)
+		PlayerList[PlayerPoint].Init();
+	PlayerPoint = 0;
+	IsDealerTurn = false;
+
 	InitRound();
 }
 
 void ABlackJack::Double()
 {
-	//���� ���� ������ ī�尡 �����̶�� ����Ǹ� ����
 }
 
-//���� �ʱ�ȭ
 void ABlackJack::InitRound()
 {
 	for (PlayerPoint = 0; PlayerPoint < PlayerCount; PlayerPoint++)
 		Hit();
-	Hit();//ī�� �����ٶ� �޸�����
+	Hit();
 
 	for (PlayerPoint = 0; PlayerPoint < PlayerCount; PlayerPoint++)
 		Hit();
-	Hit();//��� �ո�����
 
 	for (PlayerPoint = 0; PlayerPoint < PlayerCount; PlayerPoint++)
 	{
@@ -70,16 +68,17 @@ void ABlackJack::InitRound()
 
 void ABlackJack::DoubleDown()
 {
-	//���ñݾ� �ι�
 	Hit();
 	Stay();
 }
 
 void ABlackJack::Calc()
 {
+	int sum = PlayerList[PlayerPoint].CalcSum();
+
 	if (!IsDealerTurn)
 	{
-		if (PlayerList[PlayerPoint].CalcSum() > 21)
+		if (sum > 21)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("%d Player Burst"), PlayerPoint);
 			PlayerList[PlayerPoint].Sum = -1;
@@ -87,27 +86,52 @@ void ABlackJack::Calc()
 		}
 	}
 	else
-		if (PlayerList[PlayerCount].CalcSum() < 16)
-			Hit();
-		else if (PlayerList[PlayerCount].CalcSum() > 21)
+		if (sum < 16)
 		{
+			Hit();
+		}
+		else if (sum > 21)
+		{
+			p4 = "-1";
 			PlayerList[PlayerCount].Sum = 0;
 			RoundEnd();
 		}
 		else
 			RoundEnd();
+	p1 = FString::Printf(TEXT("%d"), PlayerList[0].Sum);
+	p2 = FString::Printf(TEXT("%d"), PlayerList[1].Sum);
+	p3 = FString::Printf(TEXT("%d"), PlayerList[2].Sum);
+	p4 = FString::Printf(TEXT("%d"), PlayerList[3].Sum);
 }
 
-int ABlackJack::GetPlayerPoint()
+void ABlackJack::AddCard(AActor* c)
 {
-	return PlayerPoint;
+	PlayerList[PlayerCount].CardActor.Push(c);
 }
 
+void ABlackJack::SpawnCard()
+{
+		UObject* cls = StaticLoadObject(UObject::StaticClass(), nullptr, TEXT("/Script/Engine.Blueprint'/Game/Siruduk/BP/BP_TestCard.BP_TestCard'"));
+		UBlueprint* bp = Cast<UBlueprint>(cls);
+		TSubclassOf<class UObject> blockBP = (UClass*)bp->GeneratedClass;
+		FVector v = CardPos[PlayerPoint] + FVector(-5, -5, 0) * PlayerList[PlayerPoint].Hand.Num();
+
+		UObject* c = GetWorld()->SpawnActor<UObject>(blockBP, v, FRotator(0, -90, 0));
+		ATestCard* tc = Cast<ATestCard>(c);
+		if (tc)
+			tc->Set(Deck[DeckPoint].GetNum());
+		PlayerList[PlayerPoint].CardActor.Push(c);
+}
+
+int ABlackJack::Getnum()
+{
+	return PlayerList[PlayerPoint].Hand.Top().GetNum();
+}
 
 void ABlackJack::RoundEnd()
 {
 	UE_LOG(LogTemp, Warning, TEXT("RoundEnd"));	
-
+	EndRoundEvent.Broadcast();
 	UE_LOG(LogTemp, Warning, TEXT("Dealer %d"), PlayerList[PlayerCount].Sum);
 	int Dealer = PlayerList[PlayerCount].Sum;
 	for (int i = 0; i < PlayerCount; i++)
@@ -125,19 +149,13 @@ void ABlackJack::RoundEnd()
 		}
 		else if (PlayerList[i].Sum == Dealer)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%d Player Draw"), i);//�Ǹ�ŭ
+			UE_LOG(LogTemp, Warning, TEXT("%d Player Draw"), i);
 		}
 		else
-			UE_LOG(LogTemp, Warning, TEXT("%d Player Loser"), i);//�Ǹ�ŭ
+			UE_LOG(LogTemp, Warning, TEXT("%d Player Loser"), i);
 		if (Dealer == 21)
-			return;//�ν��� * 2��
+			return;
 	}
-	for (PlayerPoint = 0; PlayerPoint < PlayerCount+1; PlayerPoint++)
-		PlayerList[PlayerPoint].Init();
-	PlayerPoint = 0;
-	IsDealerTurn = false;
-	Bet();
-
 }
 
 void ABlackJack::Stay()
@@ -153,6 +171,7 @@ void ABlackJack::Stay()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%d Player Turn	  Sum : %d"), PlayerPoint,PlayerList[PlayerPoint].Sum);
 	}
+	ChangePlayerEvent.Broadcast();
 }
 
 void ABlackJack::Insurance()
@@ -162,17 +181,27 @@ void ABlackJack::Insurance()
 
 void ABlackJack::Hit()
 {
-	Draw.Broadcast();
 	UE_LOG(LogTemp, Warning, TEXT("%d Player  %d"), PlayerPoint, Deck[DeckPoint].GetNum());
-	PlayerList[PlayerPoint].Hand.Push(Deck[DeckPoint++]);
-	Calc();
+		SpawnCard();
+		PlayerList[PlayerPoint].Hand.Push(Deck[DeckPoint++]);
+		Calc();
 }
+
+/*
+
+*/
 
 void PlayerInfo::Init()
 {
 	Hand.Empty();
 	Coin = 0;
 	InsuranceCoin = 0;
+	for (auto It = CardActor.begin(); It != CardActor.end(); ++It)
+	{
+		UObject* c = *It;
+		c->ConditionalBeginDestroy();
+	}
+	CardActor.Empty();
 }
 
 int PlayerInfo::CalcSum() {
@@ -196,6 +225,9 @@ int PlayerInfo::CalcSum() {
 			Sum -= 10;
 		}
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Player sum %d"),Sum); //UI�� �����ϱ�
+	UE_LOG(LogTemp, Warning, TEXT("Player sum %d"),Sum);
+
 	return Sum;
 }
+
+

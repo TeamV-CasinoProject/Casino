@@ -16,7 +16,8 @@ class PROJECT_CASINO_API ATestCard : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ATestCard();
-
+	UFUNCTION(BlueprintCallable, Category = "Card")
+	void Set(int i);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

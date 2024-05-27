@@ -28,11 +28,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "ArrCheck")
 	TArray < AActor*> Sorting(TArray<AActor*> arr);
 
+
 	UFUNCTION(BlueprintCallable, Category = "ArrCheck")
 	void SortingAnd2D(TArray<float> arr);
 
 	UFUNCTION(BlueprintCallable, Category = "ArrCheck")
 	float WinCheck();
+
+
+	int32 CheckPatterns(int32 Value);
 
 private:
 
