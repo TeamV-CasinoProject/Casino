@@ -59,11 +59,11 @@ public:
 	void DoubleDown();// ���� ī�带 �ް� �� ���� �̱�� 2.5��
 	void Calc();//����Ʈ����, ����� ���� �������� Ȯ��
 	void AddCard(AActor* c);
-	void SpawnCard();
+	void SpawnCard(FRotator Rotator, FActorSpawnParameters SpawnParams, Card _Card);
+	void UpdateUi();
 
 	UFUNCTION(BlueprintCallable, Category = "BlackJack")
 	int Getnum();
-
 
 	void Dealer();//����� ��
 	void RoundEnd();//����� ���̳����� ���ñݾ� ����
@@ -76,8 +76,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int PlayerPoint; //���������� Ȯ�
 	int PlayerCount;//�÷��̾��� ��
-	int DeckPoint; //ī�带 �󸶳� ����?
+	int DeckPoint=0; //ī�带 �󸶳� ����?
 	bool IsDealerTurn = false;
+	TArray<FString> pscore;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FString p1 = "";
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -86,6 +87,14 @@ public:
 	FString p3 = "";
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FString p4 = "";
+
+	TArray<FString> pend;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FString e1 = "";
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FString e2 = "";
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FString e3 = "";
 
 	UPROPERTY(BlueprintAssignable)
 	FChangePlayer ChangePlayerEvent;

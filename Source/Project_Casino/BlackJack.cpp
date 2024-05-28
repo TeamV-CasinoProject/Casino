@@ -1,3 +1,4 @@
+
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include <iostream>
@@ -16,6 +17,15 @@ void ABlackJack::InitGame()
 		PlayerList.Push(PlayerInfo());
 	}
 	SetDeck();
+	pscore.Push("");
+	pscore.Push("");
+	pscore.Push("");
+	pscore.Push("");
+	pend.Push("");
+	pend.Push("");
+	pend.Push("");
+	pend.Push("");
+
 }
 
 void ABlackJack::SetDeck()
@@ -51,6 +61,8 @@ void ABlackJack::Double()
 
 void ABlackJack::InitRound()
 {
+	if (DeckPoint < 150)
+		InitGame();
 	for (PlayerPoint = 0; PlayerPoint < PlayerCount; PlayerPoint++)
 		Hit();
 	Hit();
@@ -76,12 +88,15 @@ void ABlackJack::Calc()
 {
 	int sum = PlayerList[PlayerPoint].CalcSum();
 
+	pscore[PlayerPoint] = FString::Printf(TEXT("%d"), PlayerList[PlayerPoint].Sum);
 	if (!IsDealerTurn)
 	{
 		if (sum > 21)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("%d Player Burst"), PlayerPoint);
 			PlayerList[PlayerPoint].Sum = -1;
+			pscore[PlayerPoint] = "Burst";
+
 			Stay();
 		}
 	}
@@ -92,16 +107,13 @@ void ABlackJack::Calc()
 		}
 		else if (sum > 21)
 		{
-			p4 = "-1";
 			PlayerList[PlayerCount].Sum = 0;
 			RoundEnd();
 		}
 		else
 			RoundEnd();
-	p1 = FString::Printf(TEXT("%d"), PlayerList[0].Sum);
-	p2 = FString::Printf(TEXT("%d"), PlayerList[1].Sum);
-	p3 = FString::Printf(TEXT("%d"), PlayerList[2].Sum);
-	p4 = FString::Printf(TEXT("%d"), PlayerList[3].Sum);
+	UpdateUi();
+
 }
 
 void ABlackJack::AddCard(AActor* c)
@@ -109,18 +121,13 @@ void ABlackJack::AddCard(AActor* c)
 	PlayerList[PlayerCount].CardActor.Push(c);
 }
 
-void ABlackJack::SpawnCard()
+void ABlackJack::SpawnCard(FRotator Rotator, FActorSpawnParameters SpawnParams, Card _Card)
 {
-		UObject* cls = StaticLoadObject(UObject::StaticClass(), nullptr, TEXT("/Script/Engine.Blueprint'/Game/Siruduk/BP/BP_TestCard.BP_TestCard'"));
-		UBlueprint* bp = Cast<UBlueprint>(cls);
-		TSubclassOf<class UObject> blockBP = (UClass*)bp->GeneratedClass;
-		FVector v = CardPos[PlayerPoint] + FVector(-5, -5, 0) * PlayerList[PlayerPoint].Hand.Num();
+	FVector SpawnLocation = CardPos[PlayerPoint] + FVector(-5, -5, 0.01) * PlayerList[PlayerPoint].Hand.Num();
+	ATestCard* NewCard = GetWorld()->SpawnActor<ATestCard>(
+		ATestCard::StaticClass(), SpawnLocation, FRotator(180.0f, 90.0f, 0.0f), SpawnParams);
 
-		UObject* c = GetWorld()->SpawnActor<UObject>(blockBP, v, FRotator(0, -90, 0));
-		ATestCard* tc = Cast<ATestCard>(c);
-		if (tc)
-			tc->Set(Deck[DeckPoint].GetNum());
-		PlayerList[PlayerPoint].CardActor.Push(c);
+	NewCard->Set(_Card.GetNum(), _Card.GetSuit());
 }
 
 int ABlackJack::Getnum()
@@ -141,26 +148,33 @@ void ABlackJack::RoundEnd()
 		{
 			if (PlayerList[i].Sum == 21)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("%d Player win BlackJack * 2.5"), i);
+				pscore[i] = "win BlackJack * 2.5";
 			}
 			else
-				UE_LOG(LogTemp, Warning, TEXT("%d Player win * 2"), i);
+			{
+				pscore[i] = "win * 2";
+			}
 
 		}
 		else if (PlayerList[i].Sum == Dealer)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%d Player Draw"), i);
+			pscore[i] = "Draw";
 		}
 		else
-			UE_LOG(LogTemp, Warning, TEXT("%d Player Loser"), i);
+			pscore[i] = "Lose";
 		if (Dealer == 21)
+		{
+			pscore[i] = "Lose";
 			return;
+		}
+		UpdateUi();
 	}
 }
 
 void ABlackJack::Stay()
 {
 	UE_LOG(LogTemp, Warning, TEXT("%d Player End"), PlayerPoint);
+	pend[PlayerPoint] = "End";
 	PlayerPoint++;
 	if (PlayerCount == PlayerPoint)
 	{
@@ -171,6 +185,7 @@ void ABlackJack::Stay()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%d Player Turn	  Sum : %d"), PlayerPoint,PlayerList[PlayerPoint].Sum);
 	}
+	UpdateUi();
 	ChangePlayerEvent.Broadcast();
 }
 
@@ -182,7 +197,7 @@ void ABlackJack::Insurance()
 void ABlackJack::Hit()
 {
 	UE_LOG(LogTemp, Warning, TEXT("%d Player  %d"), PlayerPoint, Deck[DeckPoint].GetNum());
-		SpawnCard();
+		SpawnCard(FRotator(0, 0, 90), FActorSpawnParameters(), Deck[DeckPoint]);
 		PlayerList[PlayerPoint].Hand.Push(Deck[DeckPoint++]);
 		Calc();
 }
@@ -191,6 +206,17 @@ void ABlackJack::Hit()
 
 */
 
+void ABlackJack::UpdateUi()
+{
+	p1 = pscore[0];
+	p2 = pscore[1];
+	p3 = pscore[2];
+	p4 = pscore[3];
+	e1 = pend[0];
+	e2 = pend[1];
+	e3= pend[2];
+
+}
 void PlayerInfo::Init()
 {
 	Hand.Empty();
