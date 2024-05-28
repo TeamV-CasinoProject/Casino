@@ -8,8 +8,6 @@
 #include "Components/TextRenderComponent.h"
 #include "CardInHands.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameWinDelegate);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameLoseDelegate);
 class ASevens;
 
 UCLASS()
@@ -38,11 +36,6 @@ public:
 	void SetPlayerNum(int);
 	int GetPlayerNum();
 	bool GetIsClickable();
-	
-	UPROPERTY(BlueprintAssignable, Category = "SevensValues")
-	FGameWinDelegate GameWinEvent;
-	UPROPERTY(BlueprintAssignable, Category = "SevensValues")
-	FGameLoseDelegate GameLoseEvent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	bool endGame = false;
@@ -58,7 +51,8 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* BaseMesh;
 
-	UTextRenderComponent* TextComponent;
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* PlaneComponent;
 
 	FTimerHandle TimerHandle;
 };

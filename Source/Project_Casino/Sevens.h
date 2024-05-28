@@ -36,11 +36,13 @@ public:
 	static int PlayerCards[PlayerNum];
 	static int Passes[PlayerNum];
 	static int Line[SuitNum];
-	
-	static TQueue<int32> UnderNumQueue;
-	static TQueue<int32> UpNumQueue;
 
 	int IsHasLost[PlayerNum];
+
+	TArray<int32> LargeNumQueue;
+	TArray<int32> SmallNumQueue;
+	/*std::priority_queue<int> LargeNumQueue;
+	std::priority_queue<int> SmallNumQueue;*/
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	int RankStack;
