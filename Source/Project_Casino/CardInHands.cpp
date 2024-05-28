@@ -43,6 +43,8 @@ void ACardInHands::BeginPlay()
 	{
 		SendCardToTable();
 		ASevens::PlayerCards[PlayerNum]--;
+		//Temp
+		SevensGameMode->PlayerCardNum = ASevens::PlayerCards[0];
 	}
 
 	UStaticMesh* PlaneMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Plane"));
@@ -84,7 +86,8 @@ void ACardInHands::TakePlayerTurn(int CurrentPlayerNum)
 	if (CheckCardSendable())
 	{
 		--ASevens::PlayerCards[CurrentPlayerNum];
-
+		//Temp
+		SevensGameMode->PlayerCardNum = ASevens::PlayerCards[0];
 		if (ASevens::PlayerCards[CurrentPlayerNum] == 0)
 		{
 			++SevensGameMode->RankStack;
@@ -142,7 +145,8 @@ void ACardInHands::TakeAITurn()
 			if (Card->CheckCardSendable())
 			{
 				--ASevens::PlayerCards[ASevens::CurrentPlayerNum];
-
+				//Temp
+				SevensGameMode->PlayerCardNum = ASevens::PlayerCards[0];
 				UE_LOG(LogTemp, Warning, TEXT("AI %d Taked!"), ASevens::CurrentPlayerNum);
 
 				if (ASevens::PlayerCards[ASevens::CurrentPlayerNum] == 0)
@@ -187,6 +191,8 @@ void ACardInHands::TakeAITurn()
 	UE_LOG(LogTemp, Warning, TEXT("AI %d Passed..."), ASevens::CurrentPlayerNum);
 
 	--ASevens::Passes[ASevens::CurrentPlayerNum];
+	//Temp
+	SevensGameMode->PlayerPassNum = ASevens::Passes[0];
 	if (ASevens::Passes[ASevens::CurrentPlayerNum] < 0)
 	{
 		//Failed (AI Pass Zero)
@@ -209,14 +215,12 @@ void ACardInHands::TakeAITurn()
 					int Elt = Card->Myself.GetNum() * 10 + Card->Myself.GetSuit();
 					SevensGameMode->LargeNumQueue.Add(Elt);
 					UE_LOG(LogTemp, Warning, TEXT("Large"));
-					//SevensGameMode->LargeNumQueue.push(Elt);
 				}
 				else
 				{
 					int Elt = -(Card->Myself.GetNum() * 10 + Card->Myself.GetSuit());
 					SevensGameMode->LargeNumQueue.Add(Elt);
 					UE_LOG(LogTemp, Warning, TEXT("Small"));
-					//SevensGameMode->SmallNumQueue.push(Elt);
 				}
 			}
 		}
@@ -249,6 +253,8 @@ void ACardInHands::PassTurn()
 		UE_LOG(LogTemp, Warning, TEXT("Passed~"));
 
 		--ASevens::Passes[ASevens::CurrentPlayerNum];
+		//Temp
+		SevensGameMode->PlayerPassNum = ASevens::Passes[0];
 		if (ASevens::Passes[ASevens::CurrentPlayerNum] < 0)
 		{
 			//Failed (Player Pass Zero)

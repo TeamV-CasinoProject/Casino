@@ -21,10 +21,7 @@ void ASevens::BeginPlay()
 	for (int i = 0; i < PlayerNum; i++)
 	{
 		PlayerCards[i] = 13;
-		if(i == 0)
-			Passes[i] = 5;
-		else
-			Passes[i] = 0;
+		Passes[i] = 5;
 		Line[i] = 707;
 		IsHasLost[i] = 0;
 	}
