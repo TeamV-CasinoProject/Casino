@@ -59,7 +59,7 @@ public:
 	void DoubleDown();// ���� ī�带 �ް� �� ���� �̱�� 2.5��
 	void Calc();//����Ʈ����, ����� ���� �������� Ȯ��
 	void AddCard(AActor* c);
-	void SpawnCard();
+	void SpawnCard(FRotator Rotator, FActorSpawnParameters SpawnParams, Card _Card);
 	void UpdateUi();
 
 	UFUNCTION(BlueprintCallable, Category = "BlackJack")
@@ -87,6 +87,14 @@ public:
 	FString p3 = "";
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FString p4 = "";
+
+	TArray<FString> pend;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FString e1 = "";
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FString e2 = "";
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FString e3 = "";
 
 	UPROPERTY(BlueprintAssignable)
 	FChangePlayer ChangePlayerEvent;
