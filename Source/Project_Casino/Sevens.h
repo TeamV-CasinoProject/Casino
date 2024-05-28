@@ -41,8 +41,6 @@ public:
 
 	TArray<int32> LargeNumQueue;
 	TArray<int32> SmallNumQueue;
-	/*std::priority_queue<int> LargeNumQueue;
-	std::priority_queue<int> SmallNumQueue;*/
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	int RankStack;
@@ -50,6 +48,11 @@ public:
 	int Ranking;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	bool endGame;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int PlayerCardNum = PlayerCards[0];
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int PlayerPassNum = Passes[0];
 
 	//I finally found a way to connect with 'Sevens', 
 	//so later I change all the 'static' values and change the approach on the card
