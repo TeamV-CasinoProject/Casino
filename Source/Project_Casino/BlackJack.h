@@ -60,10 +60,10 @@ public:
 	void Calc();//����Ʈ����, ����� ���� �������� Ȯ��
 	void AddCard(AActor* c);
 	void SpawnCard();
+	void UpdateUi();
 
 	UFUNCTION(BlueprintCallable, Category = "BlackJack")
 	int Getnum();
-
 
 	void Dealer();//����� ��
 	void RoundEnd();//����� ���̳����� ���ñݾ� ����
@@ -76,8 +76,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int PlayerPoint; //���������� Ȯ�
 	int PlayerCount;//�÷��̾��� ��
-	int DeckPoint; //ī�带 �󸶳� ����?
+	int DeckPoint=0; //ī�带 �󸶳� ����?
 	bool IsDealerTurn = false;
+	TArray<FString> pscore;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FString p1 = "";
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)

@@ -1,3 +1,4 @@
+
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include <iostream>
@@ -16,6 +17,10 @@ void ABlackJack::InitGame()
 		PlayerList.Push(PlayerInfo());
 	}
 	SetDeck();
+	pscore.Push("");
+	pscore.Push("");
+	pscore.Push("");
+	pscore.Push("");
 }
 
 void ABlackJack::SetDeck()
@@ -51,6 +56,8 @@ void ABlackJack::Double()
 
 void ABlackJack::InitRound()
 {
+	if (DeckPoint < 150)
+		InitGame();
 	for (PlayerPoint = 0; PlayerPoint < PlayerCount; PlayerPoint++)
 		Hit();
 	Hit();
@@ -76,12 +83,15 @@ void ABlackJack::Calc()
 {
 	int sum = PlayerList[PlayerPoint].CalcSum();
 
+	pscore[PlayerPoint] = FString::Printf(TEXT("%d"), PlayerList[PlayerPoint].Sum);
 	if (!IsDealerTurn)
 	{
 		if (sum > 21)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("%d Player Burst"), PlayerPoint);
 			PlayerList[PlayerPoint].Sum = -1;
+			pscore[PlayerPoint] = "Burst";
+
 			Stay();
 		}
 	}
@@ -92,16 +102,13 @@ void ABlackJack::Calc()
 		}
 		else if (sum > 21)
 		{
-			p4 = "-1";
 			PlayerList[PlayerCount].Sum = 0;
 			RoundEnd();
 		}
 		else
 			RoundEnd();
-	p1 = FString::Printf(TEXT("%d"), PlayerList[0].Sum);
-	p2 = FString::Printf(TEXT("%d"), PlayerList[1].Sum);
-	p3 = FString::Printf(TEXT("%d"), PlayerList[2].Sum);
-	p4 = FString::Printf(TEXT("%d"), PlayerList[3].Sum);
+	UpdateUi();
+
 }
 
 void ABlackJack::AddCard(AActor* c)
@@ -141,20 +148,23 @@ void ABlackJack::RoundEnd()
 		{
 			if (PlayerList[i].Sum == 21)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("%d Player win BlackJack * 2.5"), i);
+				pscore[i] = "win BlackJack * 2.5";
 			}
 			else
-				UE_LOG(LogTemp, Warning, TEXT("%d Player win * 2"), i);
+			{
+				pscore[i] = "win * 2";
+			}
 
 		}
 		else if (PlayerList[i].Sum == Dealer)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%d Player Draw"), i);
+			pscore[i] = "Draw";
 		}
 		else
-			UE_LOG(LogTemp, Warning, TEXT("%d Player Loser"), i);
+			pscore[i] = "Lose";
 		if (Dealer == 21)
 			return;
+		UpdateUi();
 	}
 }
 
@@ -191,6 +201,13 @@ void ABlackJack::Hit()
 
 */
 
+void ABlackJack::UpdateUi()
+{
+	p1 = pscore[0];
+	p2 = pscore[1];
+	p3 = pscore[2];
+	p4 = pscore[3];
+}
 void PlayerInfo::Init()
 {
 	Hand.Empty();
