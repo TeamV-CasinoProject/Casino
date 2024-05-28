@@ -9,6 +9,9 @@
 #include "GameFramework/PlayerController.h"
 #include "Async/Async.h"
 #include "TimerManager.h"
+#include "UObject/ConstructorHelpers.h"
+#include "Engine/StaticMesh.h"
+#include "Materials/Material.h"
 
 ACardInHands::ACardInHands()
 {
@@ -19,12 +22,17 @@ ACardInHands::ACardInHands()
 	if (CardMesh)
 	{
 		BaseMesh->SetStaticMesh(CardMesh);
-
 		BaseMesh->SetWorldScale3D(FVector(1.0f, 1.0f, 1.0f));
+
+		UMaterial* CardMaterial = LoadObject<UMaterial>(nullptr, TEXT("/Game/shuby/Materials/CardDesign/M_Back"));
+		if (CardMaterial)
+		{
+			BaseMesh->SetMaterial(0, CardMaterial);
+		}
 	}
 
-	TextComponent = CreateDefaultSubobject<UTextRenderComponent>(TEXT("TextComponent"));
-	TextComponent->SetupAttachment(RootComponent);
+	PlaneComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Plane Component"));
+	PlaneComponent->SetupAttachment(RootComponent);
 
 	IsClickable = true;
 }
@@ -36,16 +44,28 @@ void ACardInHands::BeginPlay()
 		SendCardToTable();
 		ASevens::PlayerCards[PlayerNum]--;
 	}
-	 
-	FString Text = FString::Printf(TEXT("%d\n%d"), Myself.GetSuit(), Myself.GetNum());
-	TextComponent->SetText(FText::FromString(Text));
 
-	TextComponent->SetWorldRotation(FRotator(0, 180, 0));
+	UStaticMesh* PlaneMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Plane"));
+	if (PlaneMesh)
+	{
+		PlaneComponent->SetStaticMesh(PlaneMesh);
+
+		PlaneComponent->SetRelativeLocation(FVector(0.0f, -0.5f, -0.1f));
+		PlaneComponent->SetRelativeRotation(FRotator(0.0f, -90.0f, 180.0f));
+		PlaneComponent->SetRelativeScale3D(FVector(0.65f, 0.9f, 1.0f));
+
+		int32 MaterialNum = Myself.GetSuit() * 13 + Myself.GetNum();
+		FString MaterialPath = FString::Printf(TEXT("/Game/shuby/Materials/CardDesign/M_Front%d"), MaterialNum);
+		UMaterial* CardMaterial2 = LoadObject<UMaterial>(nullptr, *MaterialPath);
+		if (CardMaterial2)
+		{
+			PlaneComponent->SetMaterial(0, CardMaterial2);
+		}
+	}
 }
 
 void ACardInHands::NotifyActorOnClicked(FKey ButtonPressed)
 {
-	//CreateAndAddUIWidget();
 	//Print Test : Selected Card Data
 	UE_LOG(LogTemp, Warning, TEXT("-------------------------------"));
 	UE_LOG(LogTemp, Warning, TEXT("Card is %d, %d"), Myself.GetSuit(), Myself.GetNum());
@@ -67,13 +87,14 @@ void ACardInHands::TakePlayerTurn(int CurrentPlayerNum)
 
 		if (ASevens::PlayerCards[CurrentPlayerNum] == 0)
 		{
-			++ASevens::Ranking;	
-			ASevens::IsHasLost[CurrentPlayerNum] = 1;
-			UE_LOG(LogTemp, Warning, TEXT("Player Win! [Ranking %d]"), ASevens::Ranking);
+			++SevensGameMode->RankStack;
+			SevensGameMode->IsHasLost[CurrentPlayerNum] = 1;
+			SevensGameMode->Ranking = SevensGameMode->RankStack;
+			UE_LOG(LogTemp, Warning, TEXT("Player Win! [Ranking %d]"), SevensGameMode->RankStack);
 
 			// Ending (Player 1st)
-			GameWinEvent.Broadcast();
-			UE_LOG(LogTemp, Warning, TEXT("Player Win22222222! [Ranking %d]"), ASevens::Ranking);
+			SevensGameMode->endGame = true;
+			return;
 		}
 
 		SendCardToTable();
@@ -89,9 +110,9 @@ void ACardInHands::TakePlayerTurn(int CurrentPlayerNum)
 void ACardInHands::TakeAITurn()
 {
 	int CRN = ASevens::CurrentPlayerNum;
-	if (1 <= CRN && CRN <= 3 && (ASevens::IsHasLost[CRN] == 1 || ASevens::IsHasLost[CRN] == -1))
+	if (1 <= CRN && CRN <= 3 && (SevensGameMode->IsHasLost[CRN] == 1 || SevensGameMode->IsHasLost[CRN] == -1))
 	{
-		if(ASevens::IsHasLost[CRN] == 1)
+		if(SevensGameMode->IsHasLost[CRN] == 1)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("AI %d Waiting"), ASevens::CurrentPlayerNum);
 		}
@@ -126,9 +147,9 @@ void ACardInHands::TakeAITurn()
 
 				if (ASevens::PlayerCards[ASevens::CurrentPlayerNum] == 0)
 				{
-					++ASevens::Ranking;
-					ASevens::IsHasLost[ASevens::CurrentPlayerNum] = 1;
-					UE_LOG(LogTemp, Warning, TEXT("AI %d Win! [Ranking %d]"), ASevens::CurrentPlayerNum, ASevens::Ranking);
+					++SevensGameMode->RankStack;
+					SevensGameMode->IsHasLost[ASevens::CurrentPlayerNum] = 1;
+					UE_LOG(LogTemp, Warning, TEXT("AI %d Win! [Ranking %d]"), ASevens::CurrentPlayerNum, SevensGameMode->RankStack);
 				}
 
 				Card->SendCardToTable();
@@ -150,10 +171,11 @@ void ACardInHands::TakeAITurn()
 						UE_LOG(LogTemp, Warning, TEXT("Pass: %d"), ASevens::Passes[i]);
 				}
 
-				if (ASevens::Ranking == 4)
+				if (SevensGameMode->RankStack == 4)
 				{
 					// Ending (All AI is Ranked without Player)
-					GameLoseEvent.Broadcast();
+					SevensGameMode->Ranking = SevensGameMode->RankStack;
+					SevensGameMode->endGame = true;				
 				}
 
 				return;
@@ -168,7 +190,7 @@ void ACardInHands::TakeAITurn()
 	if (ASevens::Passes[ASevens::CurrentPlayerNum] < 0)
 	{
 		//Failed (AI Pass Zero)
-		ASevens::IsHasLost[ASevens::CurrentPlayerNum] = -1;
+		SevensGameMode->IsHasLost[ASevens::CurrentPlayerNum] = -1;
 		
 		TArray<AActor*> LoserCards;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACardInHands::StaticClass(), LoserCards);
@@ -179,17 +201,22 @@ void ACardInHands::TakeAITurn()
 
 			if (Card->GetPlayerNum() == ASevens::CurrentPlayerNum && Card->GetIsClickable())
 			{
-				SendCardToTable();
+				//UE_LOG(LogTemp, Warning, TEXT("LostLostLost %d"), Card->My);
+				Card->SendCardToTable();
 
-				if(Myself.GetNum() > 7)
+				if(Card->Myself.GetNum() > 7)
 				{
-					int32 Elt = Myself.GetNum() * 10 + Myself.GetSuit();
-					ASevens::UpNumQueue.Enqueue(Elt);
+					int Elt = Card->Myself.GetNum() * 10 + Card->Myself.GetSuit();
+					SevensGameMode->LargeNumQueue.Add(Elt);
+					UE_LOG(LogTemp, Warning, TEXT("Large"));
+					//SevensGameMode->LargeNumQueue.push(Elt);
 				}
 				else
 				{
-					int32 Elt = -(Myself.GetNum() * 10 + Myself.GetSuit());
-					ASevens::UnderNumQueue.Enqueue(Elt);
+					int Elt = -(Card->Myself.GetNum() * 10 + Card->Myself.GetSuit());
+					SevensGameMode->LargeNumQueue.Add(Elt);
+					UE_LOG(LogTemp, Warning, TEXT("Small"));
+					//SevensGameMode->SmallNumQueue.push(Elt);
 				}
 			}
 		}
@@ -225,7 +252,9 @@ void ACardInHands::PassTurn()
 		if (ASevens::Passes[ASevens::CurrentPlayerNum] < 0)
 		{
 			//Failed (Player Pass Zero)
-			GameLoseEvent.Broadcast();
+			SevensGameMode->Ranking = 4;
+			SevensGameMode->endGame = true;
+			return;
 		}
 
 		MoveToNextTurn();
@@ -246,14 +275,40 @@ void ACardInHands::SendCardToTable()
 	int Suit = Myself.GetSuit();
 	int Num = Myself.GetNum();
 
-	SetActorRotation(FRotator(0, 0, 0));
-	SetActorLocation(FVector(150 - (Suit * 100), -450 + ((Num - 1) * 75), 300));
+	SetActorRotation(FRotator(0, 0, 180.0f));
+	SetActorLocation(FVector(150 - (Suit * 100), -450 + ((Num - 1) * 75), 520));
 
 	IsClickable = false;
 }
 
 bool ACardInHands::CheckCardSendable()
 {
+	int Length = SevensGameMode->LargeNumQueue.Num();
+	for (int i = 0; i < Length; i++)
+	{
+		int Elt = SevensGameMode->LargeNumQueue[i];
+		SevensGameMode->LargeNumQueue.RemoveAt(i);
+		if (Elt / 10 == (ASevens::Line[Elt % 10] % 100) + 1)
+		{
+			ASevens::Line[Elt % 10] += 1;
+			continue;
+		}
+		SevensGameMode->LargeNumQueue.Add(Elt);
+	}
+
+	Length = SevensGameMode->SmallNumQueue.Num();
+	for (int i = 0; i < Length; i++)
+	{
+		int Elt = SevensGameMode->SmallNumQueue[i] * -1;
+		SevensGameMode->SmallNumQueue.RemoveAt(i);
+		if (Elt / 10 == (ASevens::Line[Elt % 10] / 100) - 100)
+		{
+			ASevens::Line[Elt % 10] -= 100;
+			continue;
+		}
+		SevensGameMode->SmallNumQueue.Add(Elt * -1);
+	}
+
 	int Left = ASevens::Line[Myself.GetSuit()] / 100;
 	int Right = ASevens::Line[Myself.GetSuit()] % 100;
 	
@@ -284,25 +339,6 @@ void ACardInHands::MarkSendableCard()
 
 	SetActorLocation(InitPoisition);*/	
 }
-
-//void ACardInHands::CreateAndAddUIWidget()
-//{
-//	UClass* WidgetClass = LoadClass<UWidgetBlueprint>(nullptr, TEXT("/Game/shuby/UIs/UI_GameWinResult"));
-//	if (WidgetClass)
-//	{
-//		// 위젯 인스턴스 생성
-//		UUserWidget* WidgetInstance = CreateWidget(GetWorld(), WidgetClass);
-//		if (WidgetInstance)
-//		{
-//			// 뷰포트에 위젯 추가
-//			APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-//			if (PlayerController)
-//			{
-//				WidgetInstance->AddToViewport();
-//			}
-//		}
-//	}
-//}
 
 void ACardInHands::SetMyself(int Suit, int Num)
 {

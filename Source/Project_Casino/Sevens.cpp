@@ -3,9 +3,7 @@
 
 #include "Sevens.h"
 #include "Card.h"
-
-TQueue<int32> ASevens::UnderNumQueue;
-TQueue<int32> ASevens::UpNumQueue;
+#include "UI_SevensWinResult.h"
 
 ASevens::ASevens()
 {
@@ -18,14 +16,19 @@ void ASevens::BeginPlay()
 	SetGame();
 
 	CurrentPlayerNum = 0;
+	RankStack = 0;
 	Ranking = 0;
 	for (int i = 0; i < PlayerNum; i++)
 	{
 		PlayerCards[i] = 13;
-		Passes[i] = 5;
+		if(i == 0)
+			Passes[i] = 5;
+		else
+			Passes[i] = 0;
 		Line[i] = 707;
 		IsHasLost[i] = 0;
 	}
+	endGame = false;
 }
 
 void ASevens::SetGame()
@@ -43,20 +46,25 @@ void ASevens::SetGame()
 	//Dumy Card for Event Dispatcher
 	SpawnCard(FVector(0, 0, 0), FRotator(0, 0, 0), FActorSpawnParameters(), Card(), -1);
 
+	float inc = 0.005f;
 	for (int i = 0; i < PlayerNum; i++)
 	{		
 		for (int j = i * 13; j < (i + 1) * 13; j++)
 		{
 			if (i % 2 == 0)
 			{
-				FVector SpawnLocation = FVector(i * 350 - 350, (j - (i * 13)) * 35 - 210, 350);
-				SpawnCard(SpawnLocation, FRotator(0, 0, 0), FActorSpawnParameters(), Deck[j], i);
+				FVector SpawnLocation = FVector(i * 350 - 350, (j - (i * 13)) * 35 - 210, 550 + inc);
+				if(i == 0)
+					SpawnCard(SpawnLocation, FRotator(0, 0, 180), FActorSpawnParameters(), Deck[j], i);
+				else
+					SpawnCard(SpawnLocation, FRotator(0, 0, 0), FActorSpawnParameters(), Deck[j], i);
 			}
 			else
 			{
-				FVector SpawnLocation = FVector((j - (i * 13)) * 35 - 210, (i - 1) * 750 - 750, 350);
+				FVector SpawnLocation = FVector((j - (i * 13)) * 35 - 210, (i - 1) * 650 - 650, 550 + inc);
 				SpawnCard(SpawnLocation, FRotator(0, 90, 0), FActorSpawnParameters(), Deck[j], i);
 			}
+			inc += 0.005f;
 		}
 	}
 }
@@ -81,4 +89,5 @@ void ASevens::SpawnCard(FVector SpawnLocation, FRotator Rotator, FActorSpawnPara
 
 	NewCard->SetMyself(_Card.GetSuit(), _Card.GetNum());
 	NewCard->SetPlayerNum(Num);
+	NewCard->SevensGameMode = this;
 }

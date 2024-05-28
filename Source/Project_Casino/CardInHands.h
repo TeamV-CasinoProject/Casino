@@ -9,8 +9,6 @@
 #include "CardInHands.generated.h"
 
 class ASevens;
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameWinDelegate);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameLoseDelegate);
 
 UCLASS()
 class PROJECT_CASINO_API ACardInHands : public AActor
@@ -20,33 +18,31 @@ class PROJECT_CASINO_API ACardInHands : public AActor
 public:	
 	ACardInHands();
 	virtual void BeginPlay() override;
+	virtual void NotifyActorOnClicked(FKey ButtonPressed) override;
 
 protected:
-	virtual void NotifyActorOnClicked(FKey ButtonPressed) override;
 
 public:		
 	void TakePlayerTurn(int);
 	void TakeAITurn();
-	UFUNCTION(BlueprintCallable, Category = "SevensValues")
+	UFUNCTION(BlueprintCallable)
 	void PassTurn();
 	void MoveToNextTurn();
 	void SendCardToTable();
 	bool CheckCardSendable();
 	void MarkSendableCard();
-	void CreateAndAddUIWidget();
 	void SetMyself(int, int);
 	int GetMyself();
 	void SetPlayerNum(int);
 	int GetPlayerNum();
 	bool GetIsClickable();
-	
-	UPROPERTY(BlueprintAssignable, Category = "SevensValues")
-	FGameWinDelegate GameWinEvent;
-	UPROPERTY(BlueprintAssignable, Category = "SevensValues")
-	FGameLoseDelegate GameLoseEvent;
 
-private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	bool endGame = false;
+
 	ASevens* SevensGameMode;
+private:
+	
 	Card Myself;
 	bool IsClickable;
 	int PlayerNum;
@@ -55,7 +51,8 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* BaseMesh;
 
-	UTextRenderComponent* TextComponent;
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* PlaneComponent;
 
-	FTimerHandle TimerHandle;	
+	FTimerHandle TimerHandle;
 };
