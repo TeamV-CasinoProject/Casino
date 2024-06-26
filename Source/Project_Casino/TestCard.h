@@ -16,7 +16,16 @@ class PROJECT_CASINO_API ATestCard : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ATestCard();
+	int num;
+	int suit;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* BaseMesh;
+
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* PlaneComponent;
+
+	void Set(int a, int b);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -25,12 +34,5 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite)
-	UTextRenderComponent* Text1;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UTextRenderComponent* Text2;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UStaticMeshComponent* MeshComponent;
 
 };
