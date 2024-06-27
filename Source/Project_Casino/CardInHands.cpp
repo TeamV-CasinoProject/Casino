@@ -19,22 +19,6 @@ ACardInHands::ACardInHands()
 	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Base Mesh"));
 	RootComponent = BaseMesh;
 
-	UStaticMesh* CardMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/shuby/Meshes/CardMesh"));
-	if (CardMesh)
-	{
-		BaseMesh->SetStaticMesh(CardMesh);
-		BaseMesh->SetWorldScale3D(FVector(1.0f, 1.0f, 1.0f));
-
-		UMaterial* CardMaterial = LoadObject<UMaterial>(nullptr, TEXT("/Game/shuby/Materials/CardDesign/M_Back"));
-		if (CardMaterial)
-		{
-			BaseMesh->SetMaterial(0, CardMaterial);
-		}
-	}
-
-	PlaneComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Plane Component"));
-	PlaneComponent->SetupAttachment(RootComponent);
-
 	IsClickable = true;
 }
 
@@ -48,22 +32,21 @@ void ACardInHands::BeginPlay()
 		SevensGameMode->PlayerCardNum = ASevens::PlayerCards[0];
 	}
 
-	UStaticMesh* PlaneMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Plane"));
-	if (PlaneMesh)
+	char Suit;
+	switch (Myself.GetSuit())
 	{
-		PlaneComponent->SetStaticMesh(PlaneMesh);
+	case 0: Suit = 'S'; break;
+	case 1: Suit = 'D'; break;
+	case 2: Suit = 'H'; break;
+	case 3: Suit = 'C'; break;
+	}
+	FString MeshPath = FString::Printf(TEXT("/Game/TS_LEGENO/CARD/FBX/%c%d"), Suit, Myself.GetNum());
 
-		PlaneComponent->SetRelativeLocation(FVector(0.0f, -0.5f, -0.1f));
-		PlaneComponent->SetRelativeRotation(FRotator(0.0f, -90.0f, 180.0f));
-		PlaneComponent->SetRelativeScale3D(FVector(0.65f, 0.9f, 1.0f));
-
-		int32 MaterialNum = Myself.GetSuit() * 13 + Myself.GetNum();
-		FString MaterialPath = FString::Printf(TEXT("/Game/shuby/Materials/CardDesign/M_Front%d"), MaterialNum);
-		UMaterial* CardMaterial2 = LoadObject<UMaterial>(nullptr, *MaterialPath);
-		if (CardMaterial2)
-		{
-			PlaneComponent->SetMaterial(0, CardMaterial2);
-		}
+	UStaticMesh* CardMesh = LoadObject<UStaticMesh>(nullptr, *MeshPath);
+	if (CardMesh)
+	{
+		BaseMesh->SetStaticMesh(CardMesh);
+		BaseMesh->SetWorldScale3D(FVector(1.15f, 0.9f, 1.0f));
 	}
 }
 
@@ -284,7 +267,7 @@ void ACardInHands::SendCardToTable()
 	int Suit = Myself.GetSuit();
 	int Num = Myself.GetNum();
 
-	SetActorRotation(FRotator(0, 0, 180.0f));
+	SetActorRotation(FRotator(0.0f, 90.0f, 0.0f));
 	SetActorLocation(FVector(150 - (Suit * 100), -450 + ((Num - 1) * 75), 520));
 
 	IsClickable = false;
