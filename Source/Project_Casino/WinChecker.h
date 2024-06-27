@@ -31,17 +31,17 @@ public:
 
 
 	UFUNCTION(BlueprintCallable, Category = "ArrCheck")
-	void SortingAnd2D(TArray<float> arr);
+	void SortingAnd2D(TArray<int> arr);
 
 	UFUNCTION(BlueprintCallable, Category = "ArrCheck")
-	float WinCheck();
+	int WinCheck();
 
 	int32 CheckPatterns(int32 Value);
 
 private:
 
-	float NewArr[6][6];
-	float white;
-	float black ;
+	int NewArr[6][6];
+	int white;
+	int black ;
 
 };
