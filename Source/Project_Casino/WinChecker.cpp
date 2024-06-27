@@ -72,7 +72,7 @@ TArray<AActor*> AWinChecker::Sorting(TArray<AActor*> arr)
 }
 
 
-void AWinChecker::SortingAnd2D(TArray<float> arr)
+void AWinChecker::SortingAnd2D(TArray<int> arr)
 {
 	if (arr.Num() < 36)
 	{
@@ -92,7 +92,7 @@ void AWinChecker::SortingAnd2D(TArray<float> arr)
 }
 
 
-float AWinChecker::WinCheck()
+int AWinChecker::WinCheck()
 {
     int32 Result = CheckPatterns(white);
     if (Result != 0)
@@ -102,7 +102,7 @@ float AWinChecker::WinCheck()
     if (Result != 0)
         return Result;
 
-    return 0.0f;
+    return 0;
 }
 
 int32 AWinChecker::CheckPatterns(int32 Value)
