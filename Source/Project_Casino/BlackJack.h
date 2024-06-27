@@ -31,7 +31,7 @@ private:
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FChangePlayer);
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndInitRound);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndRound);
 
 UCLASS()
@@ -61,6 +61,7 @@ public:
 	void AddCard(AActor* c);
 	void SpawnCard(FRotator Rotator, FActorSpawnParameters SpawnParams, Card _Card);
 	void UpdateUi();
+	void DelayHit();
 
 	UFUNCTION(BlueprintCallable, Category = "BlackJack")
 	int Getnum();
@@ -100,6 +101,11 @@ public:
 	FChangePlayer ChangePlayerEvent;
 	UPROPERTY(BlueprintAssignable)
 	FEndRound EndRoundEvent;
+	UPROPERTY(BlueprintAssignable)
+	FEndInitRound EndInitRound;
+
+	FTimerHandle TimerHandle;
+	int count = 1;
 
 	UFUNCTION(BlueprintCallable)
 	void ChangePlayerEventTrigger()

@@ -10,7 +10,7 @@
 
 void ABlackJack::InitGame()
 {
-	PlayerCount = 3;
+	PlayerCount = 1;
 
 	for (int i = 0; i < PlayerCount + 1; i++)
 	{
@@ -48,10 +48,13 @@ void ABlackJack::SetDeck()
 void ABlackJack::Bet()
 {
 	for (PlayerPoint = 0; PlayerPoint < PlayerCount + 1; PlayerPoint++)
+	{
 		PlayerList[PlayerPoint].Init();
+		pscore[PlayerPoint] = "";
+	}
 	PlayerPoint = 0;
 	IsDealerTurn = false;
-
+	UpdateUi();
 	InitRound();
 }
 
@@ -63,19 +66,14 @@ void ABlackJack::InitRound()
 {
 	if (DeckPoint < 150)
 		InitGame();
-	for (PlayerPoint = 0; PlayerPoint < PlayerCount; PlayerPoint++)
-		Hit();
-	Hit();
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this,
+		&ABlackJack::DelayHit, 1, false);
 
-	for (PlayerPoint = 0; PlayerPoint < PlayerCount; PlayerPoint++)
-		Hit();
-
-	for (PlayerPoint = 0; PlayerPoint < PlayerCount; PlayerPoint++)
-	{
-		if(PlayerList[PlayerPoint].Hand[0].GetNum() == PlayerList[PlayerPoint].Hand[1].GetNum())
-			UE_LOG(LogTemp, Warning, TEXT("%d Player  Double"), PlayerPoint);
-	}
-	PlayerPoint = 0;
+	//for (PlayerPoint = 0; PlayerPoint < PlayerCount; PlayerPoint++)
+	//{
+	//	if(PlayerList[PlayerPoint].Hand[0].GetNum() == PlayerList[PlayerPoint].Hand[1].GetNum())
+	//		UE_LOG(LogTemp, Warning, TEXT("%d Player  Double"), PlayerPoint);
+	//}
 }
 
 void ABlackJack::DoubleDown()
@@ -103,7 +101,8 @@ void ABlackJack::Calc()
 	else
 		if (sum < 16)
 		{
-			Hit();
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, this,
+				&ABlackJack::Hit, 1, false);
 		}
 		else if (sum > 21)
 		{
@@ -128,6 +127,7 @@ void ABlackJack::SpawnCard(FRotator Rotator, FActorSpawnParameters SpawnParams, 
 		ATestCard::StaticClass(), SpawnLocation, FRotator(180.0f, 90.0f, 0.0f), SpawnParams);
 
 	NewCard->Set(_Card.GetNum(), _Card.GetSuit());
+	PlayerList[PlayerPoint].CardActor.Push(NewCard);
 }
 
 int ABlackJack::Getnum()
@@ -217,6 +217,32 @@ void ABlackJack::UpdateUi()
 	e3= pend[2];
 
 }
+
+void ABlackJack::DelayHit()
+{
+	UE_LOG(LogTemp, Warning, TEXT("%d Player  %d"), PlayerPoint, Deck[DeckPoint].GetNum());
+	SpawnCard(FRotator(0, 0, 90), FActorSpawnParameters(), Deck[DeckPoint]);
+	PlayerList[PlayerPoint].Hand.Push(Deck[DeckPoint++]);
+	Calc();
+	PlayerPoint++;
+	UpdateUi();
+	if (PlayerPoint > PlayerCount)
+		PlayerPoint = 0;
+
+	if (count < (PlayerCount + 1) * 2 - 1)
+	{
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this,
+			&ABlackJack::DelayHit, 1, false);
+		count++;
+	}
+	else
+	{
+		PlayerPoint = 0;
+		count = 1;
+		EndInitRound.Broadcast();
+	}
+}
+
 void PlayerInfo::Init()
 {
 	Hand.Empty();
@@ -227,6 +253,7 @@ void PlayerInfo::Init()
 		UObject* c = *It;
 		c->ConditionalBeginDestroy();
 	}
+	Sum = 0;
 	CardActor.Empty();
 }
 
