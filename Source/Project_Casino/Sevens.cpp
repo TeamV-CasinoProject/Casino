@@ -48,17 +48,20 @@ void ASevens::SetGame()
 	{		
 		for (int j = i * 13; j < (i + 1) * 13; j++)
 		{
-			if (i % 2 == 0)
+			if (i == 0)
 			{
-				FVector SpawnLocation = FVector(i * 350 - 350, (j - (i * 13)) * 35 - 210, 550 + inc);
-				if(i == 0)
-					SpawnCard(SpawnLocation, FRotator(0, 0, 180), FActorSpawnParameters(), Deck[j], i);
-				else
-					SpawnCard(SpawnLocation, FRotator(0, 0, 0), FActorSpawnParameters(), Deck[j], i);
+				FVector SpawnLocation = FVector(i * 350 - 350, (j - (i * 13)) * 35 - 210, 650 + inc);
+				SpawnCard(SpawnLocation, FRotator(28, 0, 180), FActorSpawnParameters(), Deck[j], i);			
+					
+			}
+			else if (i == 2)
+			{
+				FVector SpawnLocation = FVector(i * 270 - 270, (j - (i * 13)) * 35 - 210, 550 + inc);
+				SpawnCard(SpawnLocation, FRotator(0, 0, 0), FActorSpawnParameters(), Deck[j], i);
 			}
 			else
 			{
-				FVector SpawnLocation = FVector((j - (i * 13)) * 35 - 210, (i - 1) * 650 - 650, 550 + inc);
+				FVector SpawnLocation = FVector((j - (i * 13)) * 35 - 210, (i - 1) * 550 - 550, 550 + inc);
 				SpawnCard(SpawnLocation, FRotator(0, 90, 0), FActorSpawnParameters(), Deck[j], i);
 			}
 			inc += 0.005f;

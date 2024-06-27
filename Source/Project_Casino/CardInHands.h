@@ -46,7 +46,7 @@ private:
 	Card Myself;
 	bool IsClickable;
 	int PlayerNum;
-	float Delay = 0.3f;
+	float Delay = 1.0f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* BaseMesh;

@@ -12,6 +12,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Engine/StaticMesh.h"
 #include "Materials/Material.h"
+#include "Math/UnrealMathUtility.h"
 
 ACardInHands::ACardInHands()
 {
@@ -112,6 +113,8 @@ void ACardInHands::TakePlayerTurn(int CurrentPlayerNum)
 
 void ACardInHands::TakeAITurn()
 {
+	Delay = FMath::RandRange(0.6f, 2.0f);
+
 	int CRN = ASevens::CurrentPlayerNum;
 	if (1 <= CRN && CRN <= 3 && (SevensGameMode->IsHasLost[CRN] == 1 || SevensGameMode->IsHasLost[CRN] == -1))
 	{
