@@ -40,7 +40,7 @@ class PROJECT_CASINO_API ABlackJack : public AGameModeBase
 	GENERATED_BODY()
 public:
 	UFUNCTION(BlueprintCallable, Category = "BlackJack")
-	void InitGame(); // ���� ����
+	void StartGame(); // ���� ����
 	void SetDeck(); // ���� �����ϰ� �ʱ� �� �غ�
 	UFUNCTION(BlueprintCallable, Category = "BlackJack")
 	void Bet(); // �ʱ� ���ñݾ� ����

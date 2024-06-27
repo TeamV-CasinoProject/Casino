@@ -7,7 +7,7 @@
 #include "TimerManager.h"
 #include"TestCard.h"
 
-void ABlackJack::InitGame()
+void ABlackJack::StartGame()
 {
 	PlayerCount = 1;
 
@@ -64,7 +64,7 @@ void ABlackJack::Double()
 void ABlackJack::InitRound()
 {
 	if (DeckPoint < 150)
-		InitGame();
+		StartGame();
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this,
 		&ABlackJack::DelayHit, 1, false);
 
