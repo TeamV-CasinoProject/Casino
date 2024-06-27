@@ -1,11 +1,10 @@
 
 // Fill out your copyright notice in the Description page of Project Settings.
-
+#include "BlackJack.h"
 #include <iostream>
 #include <vector>
 #include <algorithm>
 #include "TimerManager.h"
-#include "BlackJack.h"
 #include"TestCard.h"
 
 void ABlackJack::InitGame()
